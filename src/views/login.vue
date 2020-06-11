@@ -104,9 +104,6 @@ export default {
 </script>
 
 <style scoped>
-.banner {
-  width: 100%;
-}
 h2 {
   position: relative;
   font-size: 2.25rem;
@@ -250,5 +247,14 @@ h2::after {
 }
 .van-popup--bottom {
   bottom: 4.5rem;
+}
+</style>
+<style>
+.menu-content .van-stepper--round .van-stepper__plus {
+  background: #008f7b;
+}
+.menu-content .van-stepper--round .van-stepper__minus {
+  color: #8e8e8e;
+  border: 1px solid #919191;
 }
 </style>
