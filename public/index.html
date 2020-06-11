@@ -1,17 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>default</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but default doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>order-food</title>
+  </script>
+
+  <style>
+    html {
+      font-size: 10px;
+    }
+
+    body,
+    dl,
+    dd,
+    ul,
+    ol,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    pre,
+    form,
+    input,
+    textarea,
+    p,
+    hr,
+    thead,
+    tbody,
+    tfoot,
+    th,
+    td {
+      margin: 0;
+      padding: 0;
+    }
+
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    }
+
+    ul,
+    ol {
+      list-style: none;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    input,
+    button,
+    select {
+      border: 0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    a,
+    button,
+    input {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    img {
+      vertical-align: top;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    !(function (doc, win) {
+      var docEle = doc.documentElement,
+        event = 'onorientationchange' in window ? 'orientationchange' : 'resize',
+        fn = function () {
+          var width = docEle.clientWidth
+          if (width <= 750) {
+            width && (docEle.style.fontSize = 10 * (width / 320) + 'px')
+          } else {
+            docEle.style.fontSize = 22 + 'px'
+          }
+        }
+      win.addEventListener(event, fn, false)
+      doc.addEventListener('DOMContentLoaded', fn, false)
+    })(document, window)
+  </script>
+  <noscript>
+    <strong>We're sorry but default doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
