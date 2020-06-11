@@ -13,12 +13,16 @@
       </label>
       <label for="">
         <span>手机号码</span>
-        <input type="text"
+        <input type="tel"
+               pattern="[0-9]*"
+               oninput="value=value.replace(/[^\d.]/, '')"
                placeholder="请输入手机号">
       </label>
       <label for="">
         <span>验证码</span>
         <input type="text"
+               pattern="[0-9]*"
+               oninput="value=value.replace(/[^\d.]/, '')"
                placeholder="请输入短信验证码">
         <div class="code-btn">获取验证码</div>
       </label>
@@ -137,6 +141,10 @@ h2::after {
   border: solid 1px #008f7b;
   border-radius: 3rem;
   line-height: 2.25rem;
+}
+.form label:first-child {
+  background: url(../assets/arr.png) no-repeat 93% center;
+  background-size: 1.5rem 0.85rem;
 }
 .form span {
   display: inline-block;
