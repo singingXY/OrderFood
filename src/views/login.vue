@@ -71,7 +71,7 @@ export default {
   name: "Home",
   data() {
     return {
-      menuShow: true,
+      menuShow: false,
       menu: [
         { text: "套餐", num: 0 },
         { text: "炒饭", num: 0 },
