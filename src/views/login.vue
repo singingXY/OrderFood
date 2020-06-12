@@ -6,10 +6,12 @@
     <h2>在线订餐</h2>
     <div class="form">
       <label for=""
+             class="sele"
              @click="menuHide()">
         <span>预订餐品</span>
-        <input type="text"
-               placeholder="请选择餐品">
+        <div class="input">请选择餐品</div>
+        <!-- <input type="text"
+               placeholder=""> -->
       </label>
       <label for="">
         <span>手机号码</span>
@@ -26,9 +28,12 @@
                placeholder="请输入短信验证码">
         <div class="code-btn">获取验证码</div>
       </label>
-      <label for="">
+      <label for=""
+             class="sele"
+             @click="currentTime()">
         <span>就餐日期</span>
-        <input type="date">
+        <div class="input">{{today}}</div>
+
       </label>
     </div>
     <div class="bottom">
@@ -63,6 +68,16 @@
         </van-cell>
       </div>
     </van-action-sheet>
+    <van-action-sheet v-model="datetime"
+                      :round="false">
+      <van-datetime-picker v-model="currentDate"
+                           type="date"
+                           title="选择就餐日期"
+                           :min-date="minDate"
+                           :max-date="maxDate"
+                           @confirm="selectTime($event)"
+                           @cancel="currentTime()" />
+    </van-action-sheet>
   </div>
 </template>
 
@@ -78,7 +93,16 @@ export default {
         { text: "砂锅", num: 0 },
         { text: "水饺", num: 0 },
         { text: "面条", num: 0 }
-      ]
+      ],
+      datetime: false,
+      today: "请选择就餐日期",
+      minDate: new Date(),
+      maxDate: new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() + 2
+      ),
+      currentDate: ""
     };
   },
   computed: {
@@ -98,6 +122,16 @@ export default {
     },
     menuHide() {
       this.menuShow = !this.menuShow;
+    },
+    currentTime() {
+      this.datetime = !this.datetime;
+    },
+    selectTime(e) {
+      var y = e.getFullYear();
+      var m = e.getMonth() + 1; //获取当前月份的日期
+      var d = e.getDate();
+      this.today = y + "/" + m + "/" + d;
+      this.currentTime();
     }
   }
 };
@@ -127,6 +161,7 @@ h2::after {
 .form {
   width: 87.5%;
   margin: 2rem auto 0;
+  padding-bottom: 6rem;
 }
 .form label {
   position: relative;
@@ -139,7 +174,8 @@ h2::after {
   border-radius: 3rem;
   line-height: 2.25rem;
 }
-.form label:first-child {
+
+.form label.sele {
   background: url(../assets/arr.png) no-repeat 93% center;
   background-size: 1.5rem 0.85rem;
 }
@@ -150,6 +186,11 @@ h2::after {
   border-right: 1px solid #c9c9c9;
 }
 .form input {
+  text-indent: 1.3rem;
+}
+.input {
+  display: inline-block;
+  color: #777;
   text-indent: 1.3rem;
 }
 .code-btn {
