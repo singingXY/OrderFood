@@ -131,6 +131,7 @@ h2::after {
 }
 .form input {
   text-indent: 1.3rem;
+  min-width: 60%;
 }
 .input {
   display: inline-block;

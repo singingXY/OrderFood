@@ -21,29 +21,27 @@
   <div id="app">
     <div class="login">
       <img class="banner" src="images/ban.jpg" alt="">
-      <h2>在线订餐</h2>
+      <h2>员工在线订餐</h2>
       <div class="form">
         <label for="" class="sele" @click="currentTime()">
           <span>就餐日期</span>
           <div class="input">{{today}}</div>
         </label>
-        <template v-if="verified">
-          <label for="">
-            <span>手机号码</span>
-            <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
-              placeholder="请输入手机号">
-          </label>
-          <label for="">
-            <span>验证码</span>
-            <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
-              placeholder="请输入短信验证码">
-            <div class="code-btn" @click="getCode()">获取验证码</div>
-          </label>
-        </template>
-        <label v-else>
+        <label v-if="verified == false">
           <span>就餐人</span>
           <div class="input">{{user}}</div>
           <div class="code-btn" @click="ChangeDiner()">更改就餐人</div>
+        </label>
+        <label for="" v-else>
+          <span>手机号码</span>
+          <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+            placeholder="请输入手机号">
+        </label>
+        <label for="" v-if="Logged !== true">
+          <span>验证码</span>
+          <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+            placeholder="请输入短信验证码">
+          <div class="code-btn" v-if="verifiedCode" @click="getCode()">获取验证码</div>
         </label>
         <label for="" class="sele" @click="menuHide()">
           <span>预订餐品</span>
@@ -93,6 +91,8 @@
           datetime: false,  //选择日期窗口
           today: "请选择就餐日期",  //已选日期
           verified: true,  //是否未验证过手机号
+          verifiedCode: true, //获取验证码按钮
+          Logged: false,  //登录状态
           columns: [  //选择时间窗口
             { values: [] },
             { values: ['上午', '中午', '晚上'] },
@@ -113,7 +113,8 @@
           day.push(y + '/' + m + '/' + d)
         }
         this.user = localStorage.getItem('user')
-        if (this.user !== '') {
+        this.Logged = localStorage.getItem('Logged')
+        if (this.user) {
           this.verified = false
         }
       },
@@ -146,24 +147,51 @@
         },
         //获取验证码
         getCode() {
-          alert('获取验证码')
+          if (this.tel == '') {
+            this.$toast.fail('请填写手机号码');
+            return false
+          }
+          this.showUser()
+          // $.ajax({
+          //   type: 'post',
+          //   url: '?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
+          //   //data: $('form').serialize(),
+          //   success: (r) => {
+          //     if (r == "验证失败！如果是同济内部员工请与办公室联系") {
+          //       alert(r);
+          //     } else {
+          //       this.showUser()
+          //       alert("11111");
+          //     }
+          //   }
+          // });
         },
         //更改就餐人
         ChangeDiner() {
           localStorage.setItem("user", '');
+          this.Logged = false
+          localStorage.setItem("Logged", false);
           this.verified = true
+          this.verifiedCode = true
         },
         //提交表单
         submitForm() {
           if (true) {
-            this.user = '网络部 张某某'
             this.verified = false
             localStorage.setItem("user", this.user);
+            localStorage.setItem("Logged", true);
+            this.Logged = true
             this.$toast.success('提交成功');
 
           } else {
             this.$toast.fail('验证失败');
           }
+        },
+        showUser() {
+          this.user = '网络部 张某某'
+          //手机已验证，隐藏获取验证码按钮，
+          this.verified = false
+          this.verifiedCode = false
         }
       }
     })
