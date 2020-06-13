@@ -90,6 +90,7 @@
           ],
           datetime: false,  //选择日期窗口
           today: "请选择就餐日期",  //已选日期
+          todayData: '', //已选日期对象
           verified: true,  //是否未验证过手机号
           verifiedCode: true, //获取验证码按钮
           Logged: false,  //登录状态
@@ -143,6 +144,7 @@
         //选择时间
         selectTime(e) {
           this.today = e[0] + ' ' + e[1]
+          this.todayData = e
           this.currentTime();
         },
         //获取验证码
@@ -151,20 +153,17 @@
             this.$toast.fail('请填写手机号码');
             return false
           }
-          this.showUser()
-          // $.ajax({
-          //   type: 'post',
-          //   url: '?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
-          //   //data: $('form').serialize(),
-          //   success: (r) => {
-          //     if (r == "验证失败！如果是同济内部员工请与办公室联系") {
-          //       alert(r);
-          //     } else {
-          //       this.showUser()
-          //       alert("11111");
-          //     }
-          //   }
-          // });
+          $.ajax({
+            type: 'post',
+            url: '?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
+            success: (r) => {
+              if (r == "手机号未被授权！") {
+                this.$toast.fail(r);
+              } else {
+                this.showUser(r)
+              }
+            }
+          });
         },
         //更改就餐人
         ChangeDiner() {
@@ -176,19 +175,73 @@
         },
         //提交表单
         submitForm() {
-          if (true) {
-            this.verified = false
-            localStorage.setItem("user", this.user);
-            localStorage.setItem("Logged", true);
-            this.Logged = true
-            this.$toast.success('提交成功');
-
-          } else {
-            this.$toast.fail('验证失败');
+          if (this.today == "请选择就餐日期") {
+            this.$toast.fail('请选择就餐日期');
+            return false
           }
+          if (this.tel == '') {
+            this.$toast.fail('请验证手机号码');
+            return false
+          }
+          if (this.msgCode == '') {
+            this.$toast.fail('请填写验证码');
+            return false
+          }
+          if (this.foodSum == 0) {
+            this.$toast.fail('请选择餐品');
+            return false
+          }
+          axios.post('/', {
+            act: 'save',
+            tel: this.tel,
+            code: this.msgCode,
+            jiucan_date: this.todayData[0],
+            jiucan_time: this.todayData[1],
+            yudingxinxi: JSON.stringify(this.menu)
+          })
+            .then((response) => {
+              if (response.status == 200) {
+                //验证成功
+                if (true) {
+                  //若记录存在
+                  var r = confirm("您已预定过，是否覆盖已预定餐品");
+                  if (r == true) {
+                    axios.post('/', {
+                      act: 'save',
+                      tel: this.tel,
+                      jiucan_date: this.todayData[0],
+                      jiucan_time: this.todayData[1],
+                      yudingxinxi: JSON.stringify(this.menu),
+                      update: 'update'
+                    })
+                      .then((res) => {
+                        this.$toast.success('更改餐品成功');
+                      })
+                      .catch(() => {
+                        this.$toast.fail('提交失败');
+                      });
+                  }
+                  else {
+                    return false
+                  }
+                } else {
+                  this.verified = false
+                  localStorage.setItem("user", this.user);
+                  localStorage.setItem("Logged", true);
+                  this.Logged = true
+                  this.$toast.success('提交成功');
+                }
+              } else {
+                this.$toast.fail('验证失败，请检查验证码正确性，或尝试重新获取验证码');
+              }
+            })
+            .catch((error) => {
+              this.$toast.fail('提交失败');
+              console.log(error);
+            });
         },
-        showUser() {
-          this.user = '网络部 张某某'
+        showUser(r) {
+          this.user = r
           //手机已验证，隐藏获取验证码按钮，
           this.verified = false
           this.verifiedCode = false
@@ -196,6 +249,7 @@
       }
     })
   </script>
+  <script src="js/axios.min.js"></script>
 </body>
 
 </html>
