@@ -1,0 +1,360 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+  font-size: 10px;
+}
+html,
+body {
+  height: 100%;
+}
+body,
+dl,
+dd,
+ul,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+input,
+textarea,
+p,
+hr,
+thead,
+tbody,
+tfoot,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft Yahei', sans-serif;
+}
+ul,
+ol {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input,
+button,
+select {
+  border: 0;
+  outline: none;
+  -webkit-appearance: none;
+}
+a,
+button,
+input {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+img {
+  vertical-align: top;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  max-width: 750px;
+  margin: 0 auto;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.banner {
+  width: 100%;
+}
+
+h2 {
+  position: relative;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #008f7b;
+  text-align: center;
+  padding: 0.8rem 0;
+  margin-top: 2.5rem;
+}
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  margin-left: -2.5rem;
+  width: 5rem;
+  height: 3px;
+  background: #008f7b;
+}
+.form {
+  width: 87.5%;
+  margin: 2rem auto 0;
+  padding-bottom: 6rem;
+}
+.form label {
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 1.1rem 2.1rem;
+  border: solid 1px #008f7b;
+  border-radius: 3rem;
+  line-height: 2.25rem;
+}
+
+.form label.sele {
+  background: url(../images/arr.png) no-repeat 93% center;
+  background-size: 1.5rem 0.85rem;
+}
+.form span {
+  display: inline-block;
+  width: 6.3rem;
+  font-size: 1.3rem;
+  border-right: 1px solid #c9c9c9;
+}
+.form input {
+  text-indent: 1.3rem;
+}
+.input {
+  display: inline-block;
+  color: #777;
+  text-indent: 1.3rem;
+}
+.code-btn {
+  position: absolute;
+  right: 1rem;
+  top: 1.1rem;
+  width: 6rem;
+  height: 2.35rem;
+  line-height: 2.35rem;
+  background: #008f7b;
+  font-size: 0.9rem;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+}
+.bottom {
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4.5rem;
+  padding: 1.6rem 0;
+  background: #4f4f4f;
+  z-index: 20000;
+}
+.bottom p {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 24.7%;
+  height: 4.5rem;
+  padding: 1.6rem 0;
+  color: #fff;
+  font-size: 1rem;
+}
+.bottom .submit {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26.5%;
+  height: 4.5rem;
+  padding: 1.6rem 0;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: #fdcc59;
+}
+.shoppingCart {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.9rem;
+}
+.shoppingCart span {
+  position: absolute;
+  right: 5px;
+  top: -5px;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
+  background: #fc3604;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+.shoppingCart img {
+  width: 5rem;
+}
+.delete {
+  overflow: hidden;
+  padding: 0.7rem 0;
+  background: #f4f4f4;
+}
+.delete span {
+  margin-right: 1.5rem;
+  float: right;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.delete .van-icon-delete {
+  font-size: 1.3rem;
+  margin-right: 0.4rem;
+  vertical-align: text-bottom;
+}
+.van-cell__title {
+  font-size: 1.3rem;
+}
+.menu-content {
+  margin-bottom: 2.35rem;
+}
+.van-popup--bottom {
+  bottom: 4.5rem;
+}
+.menu-content .van-stepper--round .van-stepper__plus {
+  background: #008f7b;
+}
+.menu-content .van-stepper--round .van-stepper__minus {
+  color: #8e8e8e;
+  border: 1px solid #919191;
+}
+
+.report {
+  height: 100%;
+  background: #008f7b;
+}
+.list {
+  box-sizing: border-box;
+  overflow: hidden;
+  height: calc(100vh - 17.65rem - 4rem);
+  padding-top: 2.5rem;
+  margin: 0 1rem;
+  background: #fff;
+  border-radius: 9px;
+}
+.food-sum-list {
+  margin: 1.6rem 0.8rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dedede;
+}
+.food-sum-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.9rem 2.3rem 0.9rem 2.4rem;
+}
+.food-sum-list li:first-child {
+  font-weight: bold;
+}
+.food-sum {
+  text-align: right;
+  padding: 1.5rem 2.5rem;
+  font-size: 1.2rem;
+}
+
+.food-details {
+  max-height: calc(100vh - 26.15rem);
+  margin: 1.5rem 0 0.7rem;
+  overflow-y: scroll;
+}
+.food-details li {
+  display: flex;
+  justify-content: space-between;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  padding: 0 1.3rem;
+  font-size: 1rem;
+}
+.food-details li:nth-child(odd) {
+  background: #eee;
+}
+.food-details span:first-child {
+  color: #008f7b;
+}
+.van-tabs--card > .van-tabs__wrap,
+.van-tabs__nav--card {
+  height: 3.25rem;
+}
+.van-tabs__nav--card {
+  border: 0;
+}
+.van-tabs__nav--card .van-tab {
+  margin: 0 0.5rem;
+  color: #008f7b;
+  border: 1px solid #008f7b;
+  border-radius: 0.5rem;
+  font-size: 1.3rem;
+}
+.van-tabs__nav--card .van-tab.van-tab--active {
+  color: #fff;
+  background-color: #008f7b;
+}
+.van-tabs__nav--card .van-tab:last-child {
+  border-right: 1px solid #008f7b;
+}
+.list .van-tab .van-icon {
+  margin-left: 1em;
+  vertical-align: text-bottom;
+}
+.van-tabs__nav--card .van-tab {
+  position: relative;
+}
+.van-tabs__wrap {
+  overflow: inherit;
+}
+.picker {
+  position: absolute;
+  top: 3.1rem;
+  width: 10rem;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #008f7b;
+  border-radius: 0 0 5px 5px;
+  overflow: hidden;
+  color: #333;
+}
+.picker span {
+  display: block;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  border-bottom: 1px solid #eee;
+}
+.picker span:hover {
+  background: #008f7b;
+  color: #fff;
+}
+.van-tabbar {
+  height: 40px;
+  border-top: 1px solid #008f7b;
+}
+
+.van-tabbar-item {
+  margin: 5px;
+  border-radius: 5px;
+}
+.van-tabbar-item__icon {
+  display: none;
+}
+.van-tabbar-item--active {
+  background: #008f7b;
+  color: #fff;
+}

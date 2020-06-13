@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="telephone=no" name="format-detection" />
+
+  <title>苏州同济医院_在线订餐</title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/vue@2.6.11.js"></script>
+  <script src="js/vant.min.js"></script>
+  <script src="js/rem.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+  <link href="css/layout.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="app">
+    <div class="login">
+      <img class="banner" src="images/ban.jpg" alt="">
+      <h2>在线订餐</h2>
+      <div class="form">
+        <label for="" class="sele" @click="currentTime()">
+          <span>就餐日期</span>
+          <div class="input">{{today}}</div>
+        </label>
+        <template v-if="verified">
+          <label for="">
+            <span>手机号码</span>
+            <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入手机号">
+          </label>
+          <label for="">
+            <span>验证码</span>
+            <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入短信验证码">
+            <div class="code-btn" @click="getCode()">获取验证码</div>
+          </label>
+        </template>
+        <label v-else>
+          <span>就餐人</span>
+          <div class="input">{{user}}</div>
+          <div class="code-btn" @click="ChangeDiner()">更改就餐人</div>
+        </label>
+        <label for="" class="sele" @click="menuHide()">
+          <span>预订餐品</span>
+          <div class="input">请选择餐品</div>
+        </label>
+      </div>
+      <div class="bottom">
+        <div class="shoppingCart" @click="menuHide()">
+          <span>{{foodSum}}</span>
+          <img src="images/cart.png" alt="">
+        </div>
+        <p>请到食堂刷卡取餐</p>
+        <div class="submit" @click="submitForm()">立即提交</div>
+      </div>
+      <van-action-sheet v-model="menuShow" :round="false">
+        <div class="delete" @click="clearNum">
+          <span>
+            <van-icon name="delete" />清除重选</span>
+        </div>
+        <div class="menu-content">
+          <van-cell v-for="(menus,index) in menu" :key="index" :title="menus.text">
+            <template #right-icon>
+              <van-stepper v-model="menus.num" theme="round" min="0" button-size="22" disable-input default-value="0" />
+            </template>
+          </van-cell>
+        </div>
+      </van-action-sheet>
+      <van-action-sheet v-model="datetime" :round="false">
+        <van-picker show-toolbar title="选择就餐日期" :columns="columns" visible-item-count="3" @confirm="selectTime($event)"
+          @cancel="currentTime()" />
+      </van-action-sheet>
+    </div>
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          menuShow: false,  //选餐窗口
+          menu: [
+            { text: "套餐", num: 0 },
+            { text: "炒饭", num: 0 },
+            { text: "砂锅", num: 0 },
+            { text: "水饺", num: 0 },
+            { text: "面条", num: 0 }
+          ],
+          datetime: false,  //选择日期窗口
+          today: "请选择就餐日期",  //已选日期
+          verified: true,  //是否未验证过手机号
+          columns: [  //选择时间窗口
+            { values: [] },
+            { values: ['上午', '中午', '晚上'] },
+          ],
+          user: '',
+          tel: '',
+          msgCode: ''
+        };
+      },
+      mounted() {
+        var date = new Date()
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        var d = date.getDate()
+        var day = this.columns[0].values
+        for (let i = 0; i < 7; i++) {
+          let d = date.getDate() + i
+          day.push(y + '/' + m + '/' + d)
+        }
+        this.user = localStorage.getItem('user')
+        if (this.user !== '') {
+          this.verified = false
+        }
+      },
+      computed: {
+        foodSum: function () {
+          let sum = 0;
+          for (let i = 0; i < this.menu.length; i++) {
+            sum += this.menu[i].num;
+          }
+          return sum;
+        }
+      },
+      methods: {
+        //清除已选餐品
+        clearNum() {
+          for (let i = 0; i < this.menu.length; i++) {
+            this.menu[i].num = 0;
+          }
+        },
+        menuHide() {
+          this.menuShow = !this.menuShow;
+        },
+        currentTime() {
+          this.datetime = !this.datetime;
+        },
+        //选择时间
+        selectTime(e) {
+          this.today = e[0] + ' ' + e[1]
+          this.currentTime();
+        },
+        //获取验证码
+        getCode() {
+          alert('获取验证码')
+        },
+        //更改就餐人
+        ChangeDiner() {
+          localStorage.setItem("user", '');
+          this.verified = true
+        },
+        //提交表单
+        submitForm() {
+          if (true) {
+            this.user = '网络部 张某某'
+            this.verified = false
+            localStorage.setItem("user", this.user);
+            this.$toast.success('提交成功');
+
+          } else {
+            this.$toast.fail('验证失败');
+          }
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

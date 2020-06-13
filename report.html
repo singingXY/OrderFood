@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="telephone=no" name="format-detection" />
+
+  <title>苏州同济医院_订餐统计</title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/vue@2.6.11.js"></script>
+  <script src="js/vant.min.js"></script>
+  <script src="js/rem.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+  <link href="css/layout.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="app">
+    <div class="report">
+      <img class="banner" src="images/ban.jpg" alt="">
+      <div class="list">
+        <van-tabs type="card">
+          <van-tab>
+            <template #title>
+              <div class="picker" v-show="showDate">
+                <span @click="seleTime(1)">早上</span>
+                <span @click="seleTime(2)">中午</span>
+                <span @click="seleTime(3)">晚上</span>
+              </div>
+              订餐报表
+              <van-icon name="arrow-down" @click="showPick(1)" />
+            </template>
+            <ul class="food-sum-list">
+              <li><span>预定餐品</span><span>数量</span></li>
+              <li><span>套餐</span><span>1份</span></li>
+              <li><span>水饺</span><span>2份</span></li>
+              <li><span>面条</span><span>3份</span></li>
+              <li><span>砂锅</span><span>4份</span></li>
+            </ul>
+            <div class="food-sum">共9份餐品</div>
+          </van-tab>
+          <van-tab>
+            <template #title>
+              <div class="picker" v-show="showDate2">
+                <span @click="seleTime2(1)">早上</span>
+                <span @click="seleTime2(2)">中午</span>
+                <span @click="seleTime2(3)">晚上</span>
+              </div>
+              订餐详情
+              <van-icon name="arrow-down" @click="showPick(2)" />
+            </template>
+            <ul class="food-details">
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+            </ul>
+          </van-tab>
+        </van-tabs>
+        <van-tabbar v-model="oneDay">
+          <van-tabbar-item v-for="days in day" @click="seleDay(days)">{{days}}</van-tabbar-item>
+        </van-tabbar>
+      </div>
+    </div>
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          oneDay: 0,
+          day: [],
+          showDate: false,
+          showDate2: false,
+          value1: 0,
+          value2: 'a'
+        }
+      },
+      mounted() {
+
+        var date = new Date()
+        var m = date.getMonth() + 1
+        for (let i = 0; i < 7; i++) {
+          let d = date.getDate() + i
+          this.day.push(m + '/' + d)
+        }
+      },
+      methods: {
+        showPick(num) {
+          if (num == 1) {
+            this.showDate = !this.showDate
+          } else if (num == 2) {
+            this.showDate2 = !this.showDate2
+          }
+        },
+        seleTime(value) {
+          this.showDate = false
+          alert(value)
+        },
+        seleTime2(value) {
+          this.showDate2 = false
+          alert(value)
+        },
+        seleDay(day) {
+          alert(day)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
