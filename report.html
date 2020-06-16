@@ -26,11 +26,10 @@
           <van-tab>
             <template #title>
               <div class="picker" v-show="showDate">
-                <span @click="seleTime(1)">早上</span>
-                <span @click="seleTime(2)">中午</span>
-                <span @click="seleTime(3)">晚上</span>
+                <span @click="seleTime(2)">午餐</span>
+                <span @click="seleTime(3)">晚餐</span>
               </div>
-              订餐报表
+              <span id="baobiao">午餐报表</span>
               <van-icon name="arrow-down" @click="showPick(1)" />
             </template>
             <ul class="food-sum-list">
@@ -45,11 +44,10 @@
           <van-tab>
             <template #title>
               <div class="picker" v-show="showDate2">
-                <span @click="seleTime2(1)">早上</span>
-                <span @click="seleTime2(2)">中午</span>
-                <span @click="seleTime2(3)">晚上</span>
+                <span @click="seleTime2(2)">午餐</span>
+                <span @click="seleTime2(3)">晚餐</span>
               </div>
-              订餐详情
+              <span id="mingxi">午餐明细</span>
               <van-icon name="arrow-down" @click="showPick(2)" />
             </template>
             <ul class="food-details">
@@ -86,12 +84,16 @@
           day: [],
           showDate: false,
           showDate2: false,
-          value1: 0,
-          value2: 'a'
+          report: 2, //预定报表当前值，2：午餐，3：晚餐
+          details: 2 //预定明细当前值
+        }
+      },
+      computed: {
+        seleDate: function () {
+          return this.day[this.oneDay]
         }
       },
       mounted() {
-
         var date = new Date()
         var m = date.getMonth() + 1
         for (let i = 0; i < 7; i++) {
@@ -107,16 +109,32 @@
             this.showDate2 = !this.showDate2
           }
         },
+        //预定报表
         seleTime(value) {
           this.showDate = false
-          alert(value)
+          this.report = value
+          if (value == 3) {
+            $("#baobiao").text("晚餐报表");
+          } else {
+            $("#baobiao").text("午餐报表");
+          }
+          alert(this.seleDate + " 报表:" + this.report + " 明细:" + this.details)
         },
+        //预定明细
         seleTime2(value) {
           this.showDate2 = false
-          alert(value)
+          this.details = value
+          //alert(value)
+          if (value == 3) {
+            $("#mingxi").text("晚餐明细");
+          } else {
+            $("#mingxi").text("午餐明细");
+          }
+          alert(this.seleDate + " 报表:" + this.report + " 明细:" + this.details)
         },
+        //日期筛选
         seleDay(day) {
-          alert(day)
+          alert(day + " 报表:" + this.report + " 明细:" + this.details)
         }
       }
     })
