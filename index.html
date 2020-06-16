@@ -191,54 +191,55 @@
             this.$toast.fail('请选择餐品');
             return false
           }
-          axios.post('/', {
+          var data = {
             act: 'save',
             tel: this.tel,
             code: this.msgCode,
             jiucan_date: this.todayData[0],
             jiucan_time: this.todayData[1],
             yudingxinxi: JSON.stringify(this.menu)
-          })
-            .then((response) => {
-              if (response.status == 200) {
-                //验证成功
-                if (true) {
-                  //若记录存在
-                  var r = confirm("您已预定过，是否覆盖已预定餐品");
-                  if (r == true) {
-                    axios.post('/', {
-                      act: 'save',
-                      tel: this.tel,
-                      jiucan_date: this.todayData[0],
-                      jiucan_time: this.todayData[1],
-                      yudingxinxi: JSON.stringify(this.menu),
-                      update: 'update'
-                    })
-                      .then((res) => {
-                        this.$toast.success('更改餐品成功');
-                      })
-                      .catch(() => {
-                        this.$toast.fail('提交失败');
-                      });
-                  }
-                  else {
-                    return false
-                  }
-                } else {
-                  this.verified = false
-                  localStorage.setItem("user", this.user);
-                  localStorage.setItem("Logged", true);
-                  this.Logged = true
-                  this.$toast.success('提交成功');
+          }
+          $.ajax({
+            type: "POST",
+            url: "?act=save",
+            data: data,
+            success: (r) => {
+              //alert(r);
+              if (r == "验证码错误") {
+                this.$toast.fail('验证码错误！');
+              } else if (r == "是否覆盖") {
+                //若记录存在
+                var r = confirm("您已预定过，是否覆盖已预定餐品");
+                if (r == true) {
+                  $.ajax({
+                    type: "POST",
+                    url: "?act=save&update=1",
+                    data: data,
+                    success: (res) => {
+                      this.$toast.success('更改成功')
+                    },
+                    error: (e) => {
+                      this.$toast.fail('提交失败');
+                      console.log(e);
+                    }
+                  })
+                }
+                else {
+                  return false
                 }
               } else {
-                this.$toast.fail('验证失败，请检查验证码正确性，或尝试重新获取验证码');
+                this.verified = false
+                localStorage.setItem("user", this.user);
+                localStorage.setItem("Logged", true);
+                this.Logged = true
+                this.$toast.success('预定成功');
               }
-            })
-            .catch((error) => {
+            },
+            error: (error) => {
               this.$toast.fail('提交失败');
               console.log(error);
-            });
+            }
+          })
         },
         showUser(r) {
           this.user = r
@@ -249,7 +250,6 @@
       }
     })
   </script>
-  <script src="js/axios.min.js"></script>
 </body>
 
 </html>
