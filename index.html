@@ -96,7 +96,7 @@
           Logged: false,  //登录状态
           columns: [  //选择时间窗口
             { values: [] },
-            { values: ['上午', '中午', '晚上'] },
+            { values: ['午餐', '晚餐'] },
           ],
           user: '',
           tel: '',
@@ -113,10 +113,13 @@
           let d = date.getDate() + i
           day.push(y + '/' + m + '/' + d)
         }
-        this.user = localStorage.getItem('user')
-        this.Logged = localStorage.getItem('Logged')
-        if (this.user) {
-          this.verified = false
+        if (localStorage.getItem('Logged') == 'true') {
+          this.Logged = true
+          this.user = localStorage.getItem('user')
+          this.tel = localStorage.getItem('tel')
+          if (this.user) {
+            this.verified = false
+          }
         }
       },
       computed: {
@@ -136,13 +139,38 @@
           }
         },
         menuHide() {
-          this.menuShow = !this.menuShow;
+          if (this.todayData == '') {
+            this.$toast.fail('请选择就餐时间');
+          } else {
+            if (this.todayData[1] == '午餐') {
+              this.menu = [{ text: "套餐", num: 0 }]
+            } else {
+              this.menu = [
+                { text: "套餐", num: 0 },
+                { text: "炒饭", num: 0 },
+                { text: "砂锅", num: 0 },
+                { text: "水饺", num: 0 },
+                { text: "面条", num: 0 }]
+            }
+            this.menuShow = !this.menuShow;
+          }
         },
         currentTime() {
           this.datetime = !this.datetime;
         },
         //选择时间
         selectTime(e) {
+          var orderDay = e[0].split('/')[2]
+          var now = new Date().getHours();
+          if (orderDay == new Date().getDate()) {
+            if (e[1] == '午餐' && now >= 11) {
+              this.$toast.fail('无法预定，请在当天11:00前预定午餐');
+              return false
+            } else if (e[1] == '晚餐' && now >= 17) {
+              this.$toast.fail('无法预定，已经超出当天可订餐时间');
+              return false
+            }
+          }
           this.today = e[0] + ' ' + e[1]
           this.todayData = e
           this.currentTime();
