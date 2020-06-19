@@ -94,11 +94,25 @@
         }
       },
       mounted() {
+        //获取url参数
+        var url = location.search;
+        let theRequest = {};
+        if (url.indexOf("?") != -1) {
+          let str = url.substr(1);
+          strs = str.split("&");
+          for (let i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+          }
+        }
+        //获取今天起的7天
         var date = new Date()
         var m = date.getMonth() + 1
         for (let i = 0; i < 7; i++) {
           let d = date.getDate() + i
           this.day.push(m + '/' + d)
+          if (this.day[i] == theRequest.seleDate) {
+            this.oneDay = i
+          }
         }
       },
       methods: {
@@ -136,6 +150,9 @@
         seleDay(day) {
           alert(day + " 报表:" + this.report + " 明细:" + this.details)
         }
+      },
+      destroyed() {
+        clearInterval(this.timer);
       }
     })
   </script>
