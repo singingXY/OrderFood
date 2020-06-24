@@ -62,7 +62,7 @@
             <van-icon name="delete" />清除重选</span>
         </div>
         <div class="menu-content">
-          <van-cell v-for="(menus,index) in menu" :key="index" :title="menus.text">
+          <van-cell v-for="(menus,index) in menu" :key="index" :title="menus.text" v-if="menus.show == 1">
             <template #right-icon>
               <van-stepper v-model="menus.num" theme="round" min="0" button-size="22" disable-input default-value="0" />
             </template>
@@ -166,14 +166,19 @@
           this.currentTime();
 
           if (this.todayData[1] == '午餐') {
-            this.menu = [{ text: "套餐", num: 0 }]
+            this.menu = [
+              { text: "套餐", num: 0, show: 1 },
+              { text: "炒饭", num: 0, show: 0 },
+              { text: "砂锅", num: 0, show: 0 },
+              { text: "水饺", num: 0, show: 0 },
+              { text: "面条", num: 0, show: 0 }]
           } else {
             this.menu = [
-              { text: "套餐", num: 0 },
-              { text: "炒饭", num: 0 },
-              { text: "砂锅", num: 0 },
-              { text: "水饺", num: 0 },
-              { text: "面条", num: 0 }]
+              { text: "套餐", num: 0, show: 1 },
+              { text: "炒饭", num: 0, show: 1 },
+              { text: "砂锅", num: 0, show: 1 },
+              { text: "水饺", num: 0, show: 1 },
+              { text: "面条", num: 0, show: 1 }]
           }
         },
         //获取验证码

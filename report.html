@@ -80,7 +80,7 @@
       el: '#app',
       data() {
         return {
-          oneDay: 0,
+          oneDay: 3,
           day: [],
           showDate: false,
           showDate2: false,
@@ -104,11 +104,11 @@
             theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
           }
         }
-        //获取今天起的7天
+        //获取最近7天
         var date = new Date()
         var m = date.getMonth() + 1
         for (let i = 0; i < 7; i++) {
-          let d = date.getDate() + i
+          let d = date.getDate() - 3 + i
           this.day.push(m + '/' + d)
           if (this.day[i] == theRequest.seleDate) {
             this.oneDay = i
