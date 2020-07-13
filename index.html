@@ -235,50 +235,65 @@
             jiucan_time: this.todayData[1],
             yudingxinxi: JSON.stringify(this.menu)
           }
-          $.ajax({
-            type: "POST",
-            url: "?act=save",
-            data: data,
-            success: (r) => {
-              console.log(r);
-              //alert(r);
-              //if (r == "验证码错误"){
-              if (r.indexOf("验证码错误") != -1) {
-                this.$toast.fail('验证码错误！');
-                //}else if (r == "是否覆盖") {
-              } else if (r.indexOf("是否覆盖") != -1) {
-                //若记录存在
-                var re = confirm("您已预定过，是否覆盖已预定餐品");
-                if (re == true) {
-                  $.ajax({
-                    type: "POST",
-                    url: "?act=save&update=1",
-                    data: data,
-                    success: (res) => {
-                      this.$toast.success('更改成功')
-                    },
-                    error: (e) => {
-                      this.$toast.fail('提交失败');
-                      console.log(e);
-                    }
-                  })
-                }
-                else {
-                  return false
-                }
-              } else {
-                this.verified = false
-                localStorage.setItem("user", this.user);
-                localStorage.setItem("Logged", true);
-                this.Logged = true
-                this.$toast.success('预定成功');
-              }
-            },
-            error: (error) => {
-              this.$toast.fail('提交失败');
-              console.log(error);
+          var text = ''
+          for (let i = 0; i < this.menu.length; i++) {
+            if (this.menu[i].num > 0) {
+              text += this.menu[i].text + this.menu[i].num + '份;'
             }
+          }
+          Dialog.confirm({
+            title: '您确定要预定' + this.todayData[0] + '的' + this.todayData[1] + '吗？',
+            message: text,
           })
+            .then(() => {
+              $.ajax({
+                type: "POST",
+                url: "?act=save",
+                data: data,
+                success: (r) => {
+                  console.log(r);
+                  //alert(r);
+                  //if (r == "验证码错误"){
+                  if (r.indexOf("验证码错误") != -1) {
+                    this.$toast.fail('验证码错误！');
+                    //}else if (r == "是否覆盖") {
+                  } else if (r.indexOf("是否覆盖") != -1) {
+                    //若记录存在
+                    var re = confirm("您已预定过，是否覆盖已预定餐品");
+                    if (re == true) {
+                      $.ajax({
+                        type: "POST",
+                        url: "?act=save&update=1",
+                        data: data,
+                        success: (res) => {
+                          this.$toast.success('更改成功')
+                        },
+                        error: (e) => {
+                          this.$toast.fail('提交失败');
+                          console.log(e);
+                        }
+                      })
+                    }
+                    else {
+                      return false
+                    }
+                  } else {
+                    this.verified = false
+                    localStorage.setItem("user", this.user);
+                    localStorage.setItem("Logged", true);
+                    this.Logged = true
+                    this.$toast.success('预定成功');
+                  }
+                },
+                error: (error) => {
+                  this.$toast.fail('提交失败');
+                  console.log(error);
+                }
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
         },
         showUser(r) {
           if (!r) {
