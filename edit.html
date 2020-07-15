@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="telephone=no" name="format-detection" />
+
+  <title>编辑菜单_苏州同济医院_在线订餐</title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/vue@2.6.11.js"></script>
+  <script src="js/vant.min.js"></script>
+  <script src="js/rem.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+  <link href="css/layout.css" rel="stylesheet" />
+</head>
+
+<body>
+  <style>
+    body {
+      background: #008f7b;
+    }
+
+    #app {
+      width: 95%;
+      margin: 0 2.5%;
+      background: #fff;
+      border-radius: 5px;
+    }
+
+    .form {
+      width: 92%;
+      margin: 2rem auto 0;
+      padding-bottom: 6rem;
+    }
+  </style>
+  <div id="app">
+    <div class="edit-page">
+      <h2>编辑今日菜单</h2>
+      <div class="form">
+        <template v-if="Logged !== true">
+          <label for="">
+            <span>手机号码</span>
+            <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入手机号">
+          </label>
+          <label for="" v-if="Logged !== true">
+            <span>验证码</span>
+            <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入短信验证码">
+            <div class="code-btn" v-if="verifiedCode" @click="getCode()">获取验证码</div>
+          </label>
+          <van-button type="primary" round block class="check-btn" @click="checking()">点击验证</van-button>
+        </template>
+        <div class="edit">
+          <template v-if="Logged == true">
+            <h4>套餐</h4>
+            <label for="">
+              <span>大荤</span><input type="text" v-model="bigMeat">
+            </label><label for="">
+              <span>小荤</span><input type="text" v-model="smallMeat">
+            </label><label for="">
+              <span>素菜</span><input type="text" v-model="vegetable">
+            </label><label for="">
+              <span>主食</span><input type="text" v-model="stapleFood">
+            </label>
+
+            <h4>
+              自选菜肴
+            </h4>
+            <div class="free" v-for="(item,index) in items">
+              <span>菜肴{{index + 1}}</span>
+              <input type="text" class="free-name" v-model="item.name">
+              <span class="price">￥<input type="text" class="free-price" v-model="item.price"></span>
+
+              <div class="free-icon" v-if="index == 0">
+                <van-icon name="add-o" color="#008f7b" @click="onAdd()" size="2rem" />
+              </div>
+              <div class="free-icon" v-else>
+                <van-icon name="close" color="#ff5858" @click="onDel(index)" size="2rem" />
+              </div>
+            </div>
+            <van-button type="primary" round block class="check-btn" @click="submit()">提交修改</van-button>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          verified: true,  //是否未验证过手机号
+          verifiedCode: true, //获取验证码按钮
+          Logged: false,  //登录状态
+          tel: '',
+          msgCode: '',
+          bigMeat: '',   //大荤
+          smallMeat: '', //小荤
+          vegetable: '', //素菜
+          stapleFood: '',//主食
+          items: []      //自选
+        };
+      },
+      methods: {
+        //获取验证码
+        getCode() {
+          if (this.tel == '') {
+            this.$toast.fail('请填写手机号码');
+            return false
+          }
+          $.ajax({
+            type: 'post',
+            url: '?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
+            success: (r) => {
+              if (r == "手机号未被授权！") {
+                this.$toast.fail(r);
+              } else {
+                this.showForm(r)
+              }
+            }
+          });
+        },
+        checking() {
+          if (this.tel == '') {
+            this.$toast.fail('请填写手机号码');
+            return false
+          }
+          if (this.msgCode == '') {
+            this.$toast.fail('请填写验证码');
+            return false
+          }
+          $.ajax({
+            type: "POST",
+            url: "?act=save",
+            data: {
+              tel: this.tel,
+              code: this.msgCode,
+            },
+            success: (r) => {
+              console.log(r);
+              if (r.indexOf("验证码错误") != -1) {
+                this.$toast.fail('验证码错误！');
+              } else {
+                //验证通过
+                this.Logged = true
+                //写入历史数据
+                this.bigMeat = '肉丸'
+                this.smallMeat = '土豆丝'
+                this.vegetable = '小青菜'
+                this.stapleFood = '米饭、炒饭、面条'
+                this.items = [{
+                  name: '爆炒鱿鱼',
+                  price: '15'
+                }, {
+                  name: '炒肉片',
+                  price: '10'
+                }]
+              }
+            },
+            error: (error) => {
+              this.$toast.fail('提交失败');
+              console.log(error);
+            }
+          })
+        },
+        onAdd() {
+          this.items.push({})
+        },
+        onDel(index) {
+          this.items.splice(index, 1)
+        },
+        //提交修改
+        submit() {
+          console.log(this.items);
+          $.ajax({
+            type: "POST",
+            url: "?act=save",
+            data: {
+              bigMeat: this.bigMeat,
+              smallMeat: this.smallMeat,
+              vegetable: this.vegetable,
+              stapleFood: this.stapleFood,
+              items: this.items
+            },
+            success: (r) => {
+              console.log(r);
+              this.$toast.success('修改成功')
+            },
+            error: (error) => {
+              this.$toast.fail('提交失败');
+              console.log(error);
+            }
+          })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
