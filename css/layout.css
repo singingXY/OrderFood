@@ -434,3 +434,14 @@ h2::after {
   top: 0.5rem;
   right: -12%;
 }
+.edit-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 12.6rem;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+  color: #008f7b;
+}
