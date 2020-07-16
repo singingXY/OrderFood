@@ -21,7 +21,26 @@
   <div id="app">
     <div class="login">
       <img class="banner" src="images/ban.jpg" alt="">
-      <h2>员工在线订餐</h2>
+      <van-collapse class="caipu-zd" v-model="activeNames">
+        <van-collapse-item name="1">
+          <template #title>
+            <div class="caipu">
+              <img class="caipu-text" src="images/today.png" alt="">
+              <span>套餐类</span><span>自选菜肴</span>
+              <!-- <img class="caipu-arr" src="images/cp.png" alt=""> -->
+            </div>
+          </template>
+          <h4>套餐类</h4>
+          <p><strong>大荤：</strong>{{bigMeat}}</p>
+          <p><strong>小荤：</strong>{{smallMeat}}</p>
+          <p><strong>素菜：</strong>{{vegetable}}</p>
+          <p><strong>主食：</strong>{{stapleFood}}</p>
+          <h4 class="h4-2">自选菜肴</h4>
+          <p class="zx-p" v-for="(item,index) in items">
+            <strong>菜肴{{index + 1}}：</strong> {{item.name}} <span>￥{{item.price}}</span></p>
+        </van-collapse-item>
+      </van-collapse>
+      <h2 class="dc-title">员工在线订餐</h2>
       <div class="form">
         <label for="" class="sele" @click="currentTime()">
           <span>就餐日期</span>
@@ -100,7 +119,13 @@
           ],
           user: '',
           tel: '',
-          msgCode: ''
+          msgCode: '',
+          activeNames: ['0'], //折叠菜单
+          bigMeat: '',   //大荤
+          smallMeat: '', //小荤
+          vegetable: '', //素菜
+          stapleFood: '',//主食
+          items: [{ name: '', price: '' }], //自选
         };
       },
       mounted() {
@@ -121,6 +146,19 @@
             this.verified = false
           }
         }
+
+        var thisDay = y + '-' + m + '-' + d
+        $.getJSON('/http/get_caipu.php?jiucan_date=' + thisDay, function (data) {
+          this.bigMeat = data.bigMeat;
+          this.smallMeat = data.smallMeat;
+          this.vegetable = data.vegetable;
+          this.stapleFood = data.stapleFood;
+          if (data.items.length !== 0) {
+            this.items = data.items;
+          } else {
+            this.items = [{ name: '', price: '' }]
+          }
+        }.bind(this));
       },
       computed: {
         foodSum: function () {

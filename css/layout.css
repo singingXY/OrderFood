@@ -82,6 +82,62 @@ img {
   width: 100%;
 }
 
+.caipu {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+}
+.caipu-text {
+  height: 1.6rem;
+  margin-right: 1rem;
+}
+.caipu span {
+  display: inline-block;
+  padding: 0.3rem 1.9rem;
+  background: #f4f4f4;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+.caipu-arr {
+  position: absolute;
+  top: 1.7rem;
+  right: 1.45rem;
+  width: 1.75rem;
+}
+.caipu-zd .van-collapse-item__wrapper {
+  position: absolute;
+  padding-bottom: 5.5rem;
+  width: 100%;
+  background: #fff;
+  border-top: 3px solid #f4f4f4;
+  z-index: 1;
+}
+.caipu-zd h4 {
+  padding: 0.8rem 0;
+  font-size: 1.4rem;
+  color: #333;
+}
+.caipu-zd h4.h4-2 {
+  margin-top: 1rem;
+}
+.caipu-zd p {
+  padding: 0.8rem 1rem;
+  line-height: 1;
+  color: #333;
+  font-size: 1.2rem;
+  border-bottom: 1px dashed #bababa;
+}
+.zx-p strong {
+  margin-right: 2rem;
+}
+.zx-p span {
+  float: right;
+  margin-right: 3rem;
+}
+.dc-title {
+  margin: 0;
+}
 h2 {
   position: relative;
   font-size: 2.25rem;
@@ -400,6 +456,7 @@ h2::after {
 }
 .edit input {
   width: 80%;
+  max-width: 73%;
 }
 .edit label span {
   width: 5rem;
