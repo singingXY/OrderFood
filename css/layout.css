@@ -105,6 +105,11 @@ img {
   right: 1.45rem;
   width: 1.75rem;
 }
+.caipu-cross {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
 .caipu-zd .van-collapse-item__wrapper {
   position: absolute;
   padding-bottom: 5.5rem;

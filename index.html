@@ -30,6 +30,7 @@
               <!-- <img class="caipu-arr" src="images/cp.png" alt=""> -->
             </div>
           </template>
+          <van-icon class="caipu-cross" name="cross" size="2rem" @click="cross()"></van-icon>
           <h4>套餐类</h4>
           <p><strong>大荤：</strong>{{bigMeat}}</p>
           <p><strong>小荤：</strong>{{smallMeat}}</p>
@@ -342,6 +343,9 @@
             this.verified = false
             this.verifiedCode = false
           }
+        },
+        cross() {
+          this.activeNames = ['0']
         }
       }
     })
