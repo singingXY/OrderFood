@@ -430,10 +430,22 @@ h2::after {
 }
 
 /* 编辑菜单页 */
-
 .edit-page {
+  position: relative;
   background: #fff;
   border-radius: 5px;
+  margin-top: 3.4rem;
+}
+.left-arrow {
+  display: block;
+  position: absolute;
+  top: -2.5rem;
+  left: 0;
+  color: #fff;
+  font-size: 1.4rem;
+}
+.left-arrow i {
+  vertical-align: text-bottom;
 }
 .edit-page label span {
   font-size: 1.2rem;
