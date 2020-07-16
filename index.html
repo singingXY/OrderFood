@@ -279,7 +279,7 @@
               text += this.menu[i].text + this.menu[i].num + '份;'
             }
           }
-          Dialog.confirm({
+          this.$dialog.confirm({
             title: '您确定要预定' + this.todayData[0] + '的' + this.todayData[1] + '吗？',
             message: text,
           })

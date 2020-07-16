@@ -433,17 +433,6 @@ h2::after {
 .edit-page label span {
   font-size: 1.2rem;
 }
-.check-btn {
-  width: 70%;
-  margin-left: 15%;
-  margin-top: 2rem;
-  border-radius: 3rem;
-  background-color: #008f7b;
-  border: 1px solid #008f7b;
-}
-.check-btn .van-button__text {
-  border: none;
-}
 .edit {
   margin-top: 1rem;
 }
@@ -515,6 +504,21 @@ h2::after {
   color: #008f7b;
 }
 .top-day {
-  margin: 1rem 0;
+  margin: 2.5rem 0 0;
   text-align: center;
+  background: #008f7b;
+  border-radius: 3rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+.top-day button {
+  background: none;
+  border: 0;
+  color: #fff;
+}
+.top-day .day-btn {
+  border-right: solid 1px #fff;
+}
+.clone-btn {
+  border: none;
 }
