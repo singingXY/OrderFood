@@ -123,7 +123,7 @@ h2::after {
   background: url(../images/arr.png) no-repeat 93% center;
   background-size: 1.5rem 0.85rem;
 }
-.form span {
+.form label span {
   display: inline-block;
   width: 6.3rem;
   font-size: 1.3rem;
@@ -370,6 +370,13 @@ h2::after {
 
 /* 编辑菜单页 */
 
+.edit-page {
+  background: #fff;
+  border-radius: 5px;
+}
+.edit-page label span {
+  font-size: 1.2rem;
+}
 .check-btn {
   width: 70%;
   margin-left: 15%;
@@ -391,9 +398,12 @@ h2::after {
 .form .edit label {
   padding: 0.5rem;
 }
+.edit input {
+  width: 80%;
+}
 .edit label span {
-  text-align: center;
   width: 5rem;
+  text-align: center;
 }
 
 .free {
@@ -406,8 +416,10 @@ h2::after {
   line-height: 2.25rem;
 }
 .free span {
+  display: inline-block;
   width: 5rem;
   text-align: center;
+  border-right: 1px solid #c9c9c9;
 }
 .free .free-name {
   width: 7rem;
@@ -444,4 +456,8 @@ h2::after {
   line-height: 3rem;
   text-align: center;
   color: #008f7b;
+}
+.top-day {
+  margin: 1rem 0;
+  text-align: center;
 }

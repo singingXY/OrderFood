@@ -26,19 +26,22 @@
     #app {
       width: 95%;
       margin: 0 2.5%;
-      background: #fff;
-      border-radius: 5px;
     }
+
 
     .form {
       width: 92%;
       margin: 2rem auto 0;
       padding-bottom: 6rem;
     }
+
+    .van-popup--bottom {
+      bottom: 0;
+    }
   </style>
   <div id="app">
     <div class="edit-page">
-      <h2>编辑今日菜单</h2>
+      <h2>编辑菜单</h2>
       <div class="form">
         <template v-if="Logged !== true">
           <label for="">
@@ -56,6 +59,10 @@
         </template>
         <div class="edit">
           <template v-if="Logged == true">
+            <p class="top-day">
+              <van-button type="primary" round color="#008f7b" @click="dateShow()">{{today}}菜单 </van-button>
+              <van-button type="info" round color="#12a4d6" @click="copyShow()">克隆历史菜单</van-button>
+            </p>
             <h4>套餐</h4>
             <label for="">
               <span>大荤</span><input type="text" v-model="bigMeat">
@@ -73,7 +80,8 @@
             <div class="free" v-for="(item,index) in items">
               <span>菜肴{{index + 1}}</span>
               <input type="text" class="free-name" v-model="item.name">
-              <span class="price">￥<input type="text" class="free-price" v-model="item.price"></span>
+              <span class="price">￥<input type="text" class="free-price" v-model="item.price" pattern="[0-9]*"
+                  oninput="value=value.replace(/[^\d.]/, '')"></span>
 
               <div class="free-icon" v-if="index == 0">
                 <van-icon name="add-o" color="#008f7b" @click="onAdd()" size="2rem" />
@@ -86,6 +94,14 @@
           </template>
         </div>
       </div>
+      <van-popup v-model="showDate" position="bottom">
+        <van-datetime-picker v-model="editDate" type="date" title="选择要编辑的日期" :min-date="minDate" @confirm="editDay()"
+          @cancel="dateShow()" />
+      </van-popup>
+      <van-popup v-model="showCopy" position="bottom">
+        <van-datetime-picker v-model="copyDate" type="date" title="选择要复制的日期" :max-date="maxDate" @confirm="copyDay()"
+          @cancel="copyShow()" />
+      </van-popup>
     </div>
   </div>
   </div>
@@ -96,15 +112,39 @@
         return {
           verified: true,  //是否未验证过手机号
           verifiedCode: true, //获取验证码按钮
-          Logged: false,  //登录状态
+          Logged: true,  //登录状态
           tel: '',
           msgCode: '',
           bigMeat: '',   //大荤
           smallMeat: '', //小荤
           vegetable: '', //素菜
           stapleFood: '',//主食
-          items: []      //自选
+          items: [{ name: '', price: '' }], //自选
+          showDate: false, //显示日期选择框
+          showCopy: false,//显示历史日期选择框
+          minDate: new Date(), //要编辑的日期最小为今天
+          maxDate: new Date(), //要复制的日期最大为今天
+          editDate: new Date(), //已选要编辑的日期
+          copyDate: new Date(), //已选要复制的日期
+          today: ''  //当前要编辑的日期
         };
+      },
+      mounted() {
+
+        var self = this;
+        var date = new Date()
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        var d = date.getDate()
+        self.today = y + '-' + m + '-' + d
+
+        $.getJSON('/http/get_caipu.php?dt=' + self.today, function (data) {
+          this.bigMeat = data.bigMeat;
+          this.smallMeat = data.smallMeat;
+          this.vegetable = data.vegetable;
+          this.stapleFood = data.stapleFood;
+          this.items = data.items;
+        }.bind(this));
       },
       methods: {
         //获取验证码
@@ -148,18 +188,6 @@
               } else {
                 //验证通过
                 this.Logged = true
-                //写入历史数据
-                this.bigMeat = '肉丸'
-                this.smallMeat = '土豆丝'
-                this.vegetable = '小青菜'
-                this.stapleFood = '米饭、炒饭、面条'
-                this.items = [{
-                  name: '爆炒鱿鱼',
-                  price: '15'
-                }, {
-                  name: '炒肉片',
-                  price: '10'
-                }]
               }
             },
             error: (error) => {
@@ -176,10 +204,9 @@
         },
         //提交修改
         submit() {
-          console.log(this.items);
           $.ajax({
             type: "POST",
-            url: "?act=save",
+            url: "/http/get_caipu.php?dt=" + this.editDate,
             data: {
               bigMeat: this.bigMeat,
               smallMeat: this.smallMeat,
@@ -196,6 +223,38 @@
               console.log(error);
             }
           })
+        },
+        dateShow() {
+          this.showDate = !this.showDate;
+        },
+        copyShow() {
+          this.showCopy = !this.showCopy;
+        },
+        editDay() {
+          var date = this.editDate
+          var y = date.getFullYear()
+          var m = date.getMonth() + 1
+          var d = date.getDate()
+          this.today = y + '-' + m + '-' + d
+          this.showDate = !this.showDate;
+        },
+        //选择复制日期
+        copyDay() {
+          var date = this.copyDate
+          var y = date.getFullYear()
+          var m = date.getMonth() + 1
+          var d = date.getDate()
+          var day = y + '-' + m + '-' + d
+
+          $.getJSON('/http/get_caipu.php?dt=' + day, function (data) {
+            this.bigMeat = data.bigMeat;
+            this.smallMeat = data.smallMeat;
+            this.vegetable = data.vegetable;
+            this.stapleFood = data.stapleFood;
+            this.items = data.items;
+          }.bind(this));
+
+          this.showCopy = !this.showCopy;
         }
       }
     })
