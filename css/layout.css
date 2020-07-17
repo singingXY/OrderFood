@@ -284,8 +284,18 @@ h2::after {
   margin-right: 0.4rem;
   vertical-align: text-bottom;
 }
-.van-cell__title {
+.cell-title {
+  display: flex;
+  justify-content: space-between;
   font-size: 1.3rem;
+  margin-right: 1.2rem;
+}
+.cell-dese {
+  color: #999;
+  font-size: 1.1rem;
+}
+.cell-price {
+  float: right;
 }
 .menu-content {
   margin-bottom: 2.35rem;
@@ -538,4 +548,82 @@ h2::after {
 }
 .clone-btn {
   border: none;
+}
+
+/* results */
+.results h3 {
+  margin-top: 3rem;
+  font-size: 2.1rem;
+  text-align: center;
+}
+
+.results .p1 {
+  position: relative;
+  margin-top: 1rem;
+  padding-bottom: 2.6rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.results .p1 .arr {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  margin-left: -1rem;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: #008f7b transparent transparent transparent;
+  border-width: 1rem 0.8rem;
+}
+
+.qrcode {
+  margin-top: 1rem;
+}
+
+.qrcode img {
+  margin: 0 auto;
+}
+.tips {
+  margin: 2rem;
+  font-size: 1.3rem;
+  color: #666;
+  text-align: center;
+}
+.results .re-list {
+  margin: 2rem 1rem 0;
+  /* border-top: 1px solid #dedede; */
+}
+
+.results .re-list li {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  margin: 0 10%;
+  padding: 0.75rem 0;
+  font-size: 1.4rem;
+}
+.results .re-list .index {
+  display: inline-block;
+  margin-right: 0.8rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #008f7b;
+  color: #fff;
+  text-align: center;
+}
+.results .re-list .price {
+  margin-right: 2rem;
+}
+.results .re-list .last {
+  padding-left: 2.3rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid #dedede;
+}
+.results .text {
+  margin: 2rem 10%;
+  color: #777;
+  font-size: 1.2rem;
+  line-height: 1.5;
 }

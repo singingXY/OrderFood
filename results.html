@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>支付成功</title>
+  <link href="css/layout.css" rel="stylesheet" />
+  <script src="js/jquery.min.js"></script>
+  <script src="js/qrcode.min.js"></script>
+  <script src="js/rem.js"></script>
+
+</head>
+
+<body>
+  <div class="results">
+    <h3>支付成功！</h3>
+    <div class="p1">
+      出示下方二维码取餐
+      <div class="arr"></div>
+    </div>
+    <div id="qrcode" class="qrcode"></div>
+    <p class="tips">凭此二维码取餐，敬请保存此页面截图</p>
+    <ul class="re-list">
+      <li class="last" id="last">
+        <span>总价</span>
+        <span><span class="price" id="price">￥23</span> </span></li>
+    </ul>
+    <div class="text">
+      <p>就餐日期：<span id="jiucan_date">2020-7-16</span></p>
+      <p>提交时间：<span id="nowTime">2020-7-16</span> </p>
+      <p>订 单 号 ：<span id="orderID">hbdF89ydgEnbWv7df9ghvYdOf</span></p>
+    </div>
+  </div>
+  <script type="text/javascript">
+    window.onload = function () {
+      var myMenu = JSON.parse(localStorage.getItem('myMenu'))
+      console.log(myMenu);
+      //localStorage.removeItem('myMenu');
+      $('#price').text('￥' + myMenu.price)
+      $('#jiucan_date').text(myMenu.jiucan_date)
+      $('#nowTime').text(myMenu.nowTime)
+      $('#orderID').text(myMenu.orderID)
+
+      var menu = myMenu.menus
+      var num = 1
+      for (let i = 0; i < menu.length; i++) {
+        if (menu[i].num > 0) {
+          var text = '<li>'
+            + '<span><span class="index">' + num + '</span>' + menu[i].food + '</span>'
+            + '<span><span class="price">￥' + menu[i].price + '</span> x' + menu[i].num + '</span></li>'
+          $(text).insertBefore('#last');
+          num++;
+        }
+      }
+      //var qrText = myMenu.orderID
+      var qrText = 'hbdF89ydgEnbWv7df9ghvYdOf'
+      qrcode.makeCode(qrText);
+    }
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+      width: 200,
+      height: 200,
+      //correctLevel: QRCode.CorrectLevel.L //容错级别，可设置为：L\M\Q\H
+    });
+
+
+  </script>
+</body>
+
+</html>
