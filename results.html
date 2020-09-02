@@ -36,6 +36,7 @@
     window.onload = function () {
       var myMenu = JSON.parse(localStorage.getItem('myMenu'))
       console.log(myMenu);
+
       //localStorage.removeItem('myMenu');
       $('#price').text('￥' + myMenu.price)
       $('#jiucan_date').text(myMenu.jiucan_date)

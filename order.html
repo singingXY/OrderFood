@@ -28,12 +28,6 @@
           <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
             placeholder="请输入手机号">
         </label>
-        <label for="" v-if="Logged !== true">
-          <span>验证码</span>
-          <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
-            placeholder="请输入短信验证码">
-          <div class="code-btn" v-if="verifiedCode" @click="getCode()">获取验证码</div>
-        </label>
         <label for="" class="sele" @click="currentTime()">
           <span>就餐日期</span>
           <div class="input">{{today}}</div>
@@ -53,7 +47,7 @@
           <img src="images/cart.png" alt="">
         </div>
         <p>￥{{totalPrice}}</p>
-        <div class="submit" @click="submitForm()">去结算</div>
+        <div class="submit" @click="pay()">去结算</div>
       </div>
       <van-action-sheet v-model="menuShow" :round="false">
         <div class="delete" @click="clearNum">
@@ -180,15 +174,12 @@
           datetime: false,  //选择日期窗口
           today: "请选择就餐日期",  //已选日期
           todayData: '', //已选日期对象
-          verifiedCode: true, //获取验证码按钮
-          Logged: false,  //登录状态
           columns: [  //选择时间窗口
             { values: [] },
             { values: ['午餐', '晚餐'] },
           ],
           user: '',
           tel: '',
-          msgCode: '',
           address: ''
         };
       },
@@ -271,44 +262,10 @@
           }
           this.menus = nowMenu
         },
-        //获取验证码
-        getCode() {
-          if (this.tel == '') {
-            this.$toast.fail('请填写手机号码');
-            return false
-          }
-          $.ajax({
-            type: 'post',
-            url: '/dc/?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
-            success: (r) => {
-              if (r == "手机号未被授权！") {
-                this.$toast.fail(r);
-              }
-            }
-          });
-        },
-        //验证手机与验证码
         submitForm() {
-          if (this.tel == '') {
-            this.$toast.fail('请填写手机号码');
-            return false
-          }
-          if (this.msgCode == '') {
-            this.$toast.fail('请填写验证码');
-            return false
-          }
-          if (this.today == "请选择就餐日期") {
-            this.$toast.fail('请选择就餐日期');
-            return false
-          }
-          if (this.foodSum == 0) {
-            this.$toast.fail('请选择餐品');
-            return false
-          }
           var data = {
             act: 'save',
             tel: this.tel,
-            code: this.msgCode,
             jiucan_date: this.todayData[0],
             jiucan_time: this.todayData[1],
             yudingxinxi: JSON.stringify(this.menu),
@@ -320,18 +277,14 @@
             data: data,
             success: (r) => {
               console.log(r);
-              if (r.indexOf("验证码错误") != -1) {
-                this.$toast.fail('验证码错误！');
-                return false
-              } else {
-                if (true) {
-                  pay();
-                  this.$toast.loading({
-                    message: '正在提交，请勿重复发起支付...',
-                    forbidClick: true,
-                  });
-                }
+              if (true) {
+                this.pay();
+                this.$toast.loading({
+                  message: '正在提交，请勿重复发起支付...',
+                  forbidClick: true,
+                });
               }
+
             },
             error: (error) => {
               this.$toast.fail('提交失败');
@@ -341,6 +294,18 @@
         },
         //结算
         pay() {
+          if (this.tel == '') {
+            this.$toast.fail('请填写手机号码');
+            return false
+          }
+          if (this.today == "请选择就餐日期") {
+            this.$toast.fail('请选择就餐日期');
+            return false
+          }
+          if (this.foodSum == 0) {
+            this.$toast.fail('请选择餐品');
+            return false
+          }
           var data = {
             price: this.totalPrice,
           }
