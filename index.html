@@ -38,7 +38,8 @@
           <p><strong>主食：</strong>{{stapleFood}}</p>
           <h4 class="h4-2">自选菜肴</h4>
           <p class="zx-p" v-for="(item,index) in items">
-            <strong>菜肴{{index + 1}}：</strong> {{item.name}} <span>￥{{item.price}}</span></p>
+            <strong>菜肴{{index + 1}}：</strong> {{item.name}} <span>￥{{item.price}}</span>
+          </p>
         </van-collapse-item>
       </van-collapse>
       <h2 class="dc-title">员工在线订餐</h2>
@@ -79,7 +80,8 @@
       <van-action-sheet v-model="menuShow" :round="false">
         <div class="delete" @click="clearNum">
           <span>
-            <van-icon name="delete" />清除重选</span>
+            <van-icon name="delete" />清除重选
+          </span>
         </div>
         <div class="menu-content">
           <van-cell v-for="(menus,index) in menu" :key="index" :title="menus.text" v-if="menus.show == 1">

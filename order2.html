@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="telephone=no" name="format-detection" />
+
+  <title>苏州同济医院_在线订餐</title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/vue@2.6.11.js"></script>
+  <script src="js/vant.min.js"></script>
+  <script src="js/rem.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+  <link href="css/layout.css" rel="stylesheet" />
+</head>
+
+<body>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+
+    h2 {
+      font-size: 2.1rem;
+      padding: 0.6rem 0;
+      margin-top: 1.1rem;
+    }
+
+    .form label {
+      padding: 0.8rem 2.1rem;
+    }
+
+    .cell-price {
+      float: right;
+      margin-right: 10%;
+    }
+
+    .bottom p {
+      padding: 1.2rem 0;
+    }
+
+    .bottom p span {
+      font-size: 1.6em;
+      color: #fc5;
+    }
+  </style>
+  <div id="app" v-cloak>
+    <div class="login">
+      <img class="banner" src="images/ban.jpg" alt="">
+      <h2>同济食堂在线订餐</h2>
+      <div class="form">
+        <label for="">
+          <span>手机号码</span>
+          <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+            placeholder="请输入手机号">
+        </label>
+        <label for="" class="sele" @click="currentTime()">
+          <span>就餐时间</span>
+          <div class="input">{{today}} {{time}}</div>
+        </label>
+        <label for="" class="sele" @click="menuHide()">
+          <span>预订餐品</span>
+          <div class="input">{{ cMenu }}</div>
+        </label>
+        <label for="" class="sele" @click="currentBingqu()">
+          <span>病区</span>
+          <!-- <input type="text" v-model="address1" placeholder="请选择您的所在病区"> -->
+          <div class="input">{{ address1 }}</div>
+        </label>
+        <label for="">
+          <span>床位号</span>
+          <input type="number" v-model="address2" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
+            placeholder="请输入您的床位号">
+        </label>
+      </div>
+      <div class="bottom">
+        <div class="shoppingCart" @click="menuHide()">
+          <span>{{foodSum}}</span>
+          <img src="images/cart.png" alt="">
+        </div>
+        <p><span>￥{{totalPrice}}</span> （送餐时付款）</p>
+        <div class="submit" @click="submitForm()">立即提交</div>
+      </div>
+      <!-- 选择餐品 -->
+      <van-action-sheet v-model="menuShow" :round="false">
+        <div class="delete" @click="clearNum">
+          <span>
+            <van-icon name="delete" />清除重选
+          </span>
+        </div>
+        <div class="menu-content">
+          <van-cell v-for="(menu,index) in menus" :key="index">
+            <template #title>
+              <div class="cell-title">
+                <span>
+                  {{menu.food}} <span class="cell-dese" v-if="menu.desc">{{menu.desc}}</span>
+                </span>
+                <span class="cell-price">￥{{menu.price}} </span>
+              </div>
+            </template>
+            <template #right-icon>
+              <van-stepper v-model="menu.num" theme="round" min="0" max="10" button-size="22" disable-input
+                :disable-plus="disablePlus" default-value="0" @change="stepperOnChange()" @overlimit="showMax()" />
+            </template>
+          </van-cell>
+        </div>
+      </van-action-sheet>
+      <!-- 选择就餐时间 -->
+      <van-action-sheet v-model="datetime" :round="false">
+        <van-picker show-toolbar title="选择就餐时间" :columns="columns" visible-item-count="3" @confirm="selectTime($event)"
+          @cancel="currentTime()" />
+      </van-action-sheet>
+      <!-- 选择病区 -->
+      <van-action-sheet v-model="Bingqu" :round="false">
+        <van-picker show-toolbar title="选择您所在病区" :columns="bingqu" visible-item-count="5"
+          @confirm="selectBingqu($event)" @cancel="currentBingqu()" />
+      </van-action-sheet>
+    </div>
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          menuShow: false,  //选餐窗口
+          cMenu: '请选择餐品', //显示的已选餐品
+          menu: [],
+          menus: [{
+            food: "粥",
+            price: 6,
+            num: 0,
+          }, {
+            food: '面',
+            price: 10,
+            num: 0,
+          }, {
+            food: '饭',
+            price: 12,
+            num: 0,
+          }],
+          datetime: false,  //选择日期窗口
+          today: "请选择就餐时间",  //已选日期
+          todayData: '', //已选日期对象
+          time: '早餐',   //已选时间
+          bingqu: ['一病区', '二病区', '三病区', '四病区', '五病区', '六病区'],
+          //columns: ['早餐', '午餐', '晚餐'],
+          disablePlus: false, //是否禁用增加按钮
+          columns: [  //选择时间窗口
+            { values: [] },
+            { values: ['早餐', '午餐', '晚餐'] },
+          ],
+          Bingqu: false, //选择病区窗口
+          address1: '请选择您的所在病区', //病区
+          address2: '',  //床号
+          tel: '', //手机号
+          total: 0, //餐品总数
+          openid: 'o6BWLjqOG4mPJvoOGcMyqsu2A63c'
+        };
+      },
+      mounted() {
+        //获取url参数
+        var url = location.search;
+        var theRequest = {};
+        if (url.indexOf("?") != -1) {
+          var str = url.substr(1);
+          strs = str.split("&");
+          for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+          }
+        }
+        if (theRequest.openid) {
+          this.openid = theRequest.openid;
+        }
+
+
+        //默认今日
+        var date = new Date()
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        var d = date.getDate()
+        this.today = y + '/' + m + '/' + d
+        var day = this.columns[0].values
+        for (let i = 0; i < 5; i++) {
+          let d = date.getDate() + i
+          day.push(y + '/' + m + '/' + d)
+        }
+        var now = new Date().getHours();
+        if (now >= 9) {
+          this.time = '午餐'
+          if (now >= 11) {
+            this.time = '晚餐'
+          }
+        }
+      },
+      computed: {
+        foodSum: function () {
+          let sum = 0;
+          for (let i = 0; i < this.menus.length; i++) {
+            sum += this.menus[i].num;
+          }
+          return sum;
+        },
+        totalPrice: function () {
+          let total = 0;
+          for (let i = 0; i < this.menus.length; i++) {
+            total += this.menus[i].price * this.menus[i].num;
+          }
+          return total;
+        },
+
+      },
+      methods: {
+        currentTime() {  //选择就餐时间窗口
+          this.datetime = !this.datetime;
+        },
+        menuHide() {  //点击预定餐品
+          // if (this.todayData == '') {
+          //   this.$toast.fail('请选择就餐时间');
+          // } else {
+          this.menuShow = !this.menuShow;
+          //}
+        },
+        stepperOnChange() { //当餐品数量改变时
+          var menu = this.menus
+          this.cMenu = ''
+          var num = 0
+          for (var i = 0; i < menu.length; i++) {
+            if (menu[i].num > 0) {
+              this.cMenu += menu[i].food + menu[i].num + ' '
+              num += menu[i].num
+            }
+          }
+          if (num >= 10) {
+            this.disablePlus = true
+          } else {
+            this.disablePlus = false
+          }
+          this.total = num
+
+        },
+        showMax() { //步进器点击禁用按钮
+          if (this.total >= 10) {
+            this.$dialog.alert({
+              message: '如需大量预订请联系食堂，电话05128888888',
+              theme: 'round-button',
+            });
+          }
+        },
+        clearNum() { //清除已选餐品
+          for (let i = 0; i < this.menus.length; i++) {
+            this.menus[i].num = 0;
+          }
+        },
+        selectTime(e) { //选择时间
+          var orderDay = e[0].split('/')[2]
+          var today = new Date().getDate()
+          var now = new Date().getHours();
+          if (today == orderDay) {
+            if (e[1] == '早餐' && now >= 9) {
+              this.$toast.fail('当天早餐请在9:00前预定');
+              return false
+            } else if (e[1] == '午餐' && now >= 11) {
+              this.$toast.fail('当天午餐请在11:00前预定');
+              return false
+            } else if (e[1] == '晚餐' && now >= 17) {
+              this.$toast.fail('无法预定，已经超出当天可订餐时间');
+              return false
+            }
+          }
+          this.today = e[0]
+          this.time = e[1]
+          this.currentTime();
+          // var nowMenu = this.menus
+          // this.menu = this.menus
+          // if (this.todayData[1] == '午餐') {
+          //   for (let i = 0; i < nowMenu.length; i++) {
+          //     if (nowMenu[i].type == '5') {
+          //       nowMenu[i].show = 1
+          //     } else {
+          //       nowMenu[i].show = 0
+          //     }
+          //   }
+          // } else {
+          //   for (let i = 0; i < nowMenu.length; i++) {
+          //     nowMenu[i].show = 1
+          //   }
+          // }
+          // this.menus = nowMenu
+        },
+        currentBingqu() { //点击选择病区
+          this.Bingqu = !this.Bingqu
+        },
+        selectBingqu(e) { //选择病区
+          this.address1 = e
+          this.Bingqu = false
+        },
+        submitForm() { //提交
+          if (this.tel == '') {
+            this.$toast.fail('请填写手机号码');
+            return false
+          } else {
+            var ab = /(^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$)|(^((\(\d{3}\))|(\d{3}\-))?(1[358]\d{9})$)/;
+            if (!ab.test(this.tel)) {
+              this.$toast.fail('请填写正确的手机号码！');
+              return false
+            }
+          }
+          if (this.today == "请选择就餐日期") {
+            this.$toast.fail('请选择就餐日期');
+            return false
+          }
+          if (this.foodSum == 0) {
+            this.$toast.fail('请选择餐品');
+            return false
+          }
+          if (this.address1 == '' || this.address2 == '') {
+            this.$toast.fail('请输入您的病区和床位');
+            return false
+          }
+          var menu = []
+          for (var i = 0; i < this.menus.length; i++) {
+            if (this.menus[i].num > 0) {
+              menu.push({ food: this.menus[i].food, num: this.menus[i].num })
+            }
+          }
+          var data = {
+            openid: this.openid,  //点餐openid
+            date: this.today,    //就餐日期
+            type: this.time,    //就餐类型 （早餐 午餐 晚餐）
+            total: this.total,   //菜品总数
+            menu: menu, 	//菜品详细 （数组）
+            tel: this.tel,		//电话
+            bingqu: this.address1,   //病区
+            chuanghao: this.address2, //床号
+            price: this.totalPrice //总价
+          }
+          //console.log(data);
+          //this.$toast.loading({
+          //  message: '正在提交，请勿重复预定...',
+          //  forbidClick: true,
+          //});
+          var _this = this
+          $.ajax({
+            type: "POST",
+            url: "http://test.it0733.com/index.php/Apiinfo/Tjyy/addDcInfo",
+            data: data,
+            success: (r) => {
+              var res = JSON.parse(r)
+              console.log(res);
+              if (res.status == 200) {
+                _this.$toast.success('预订成功！');
+                _this.total = 0
+                _this.tel = ''
+                _this.address1 = '请选择您的所在病区'
+                _this.address2 = ''
+              } else if (res.status == 0) {
+                _this.$toast.fail('您的预定已超出限额,如需大量预订请联系食堂，电话05128888888');
+              } else {
+                _this.$toast.fail('订餐失败!');
+              }
+              // else if (res.status == 404) {
+              //   _this.$toast.fail('订餐失败!');
+              // }
+            },
+            error: (error) => {
+              _this.$toast.fail('提交失败');
+              console.log(error);
+            }
+          })
+        },
+      }
+    })
+  </script>
+</body>
+
+</html>
