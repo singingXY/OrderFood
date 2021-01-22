@@ -51,7 +51,10 @@
     <div class="login">
       <img class="banner" src="images/ban.jpg" alt="">
       <h2>同济食堂在线订餐</h2>
-      <div class="form">
+      <div class="form"><label for="">
+          <span>姓名</span>
+          <input type="text" v-model="name" placeholder="请输入姓名">
+        </label>
         <label for="">
           <span>手机号码</span>
           <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
@@ -155,6 +158,7 @@
           Bingqu: false, //选择病区窗口
           address1: '请选择您的所在病区', //病区
           address2: '',  //床号
+          name: '',  //姓名
           tel: '', //手机号
           total: 0, //餐品总数
           openid: 'o6BWLjqOG4mPJvoOGcMyqsu2A63c'
@@ -298,6 +302,10 @@
           this.Bingqu = false
         },
         submitForm() { //提交
+          if (this.name == '') {
+            this.$toast.fail('请输入您姓名');
+            return false
+          }
           if (this.tel == '') {
             this.$toast.fail('请填写手机号码');
             return false
@@ -335,7 +343,8 @@
             tel: this.tel,		//电话
             bingqu: this.address1,   //病区
             chuanghao: this.address2, //床号
-            price: this.totalPrice //总价
+            price: this.totalPrice, //总价
+            name: this.name  //姓名
           }
           //console.log(data);
           //this.$toast.loading({
