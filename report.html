@@ -1,162 +1,162 @@
 <!DOCTYPE html>
 <html lang="zh">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="telephone=no" name="format-detection" />
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  <meta content="yes" name="apple-mobile-web-app-capable" />
-  <meta content="telephone=no" name="format-detection" />
+    <title>苏州同济医院_订餐统计</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vant.min.js"></script>
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+    <link href="css/layout.css" rel="stylesheet" />
+  </head>
 
-  <title>苏州同济医院_订餐统计</title>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/vue@2.6.11.js"></script>
-  <script src="js/vant.min.js"></script>
-  <script src="js/rem.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
-  <link href="css/layout.css" rel="stylesheet" />
-</head>
-
-<body>
-  <div id="app">
-    <div class="report">
-      <img class="banner" src="images/ban.jpg" alt="">
-      <div class="list">
-        <van-tabs type="card">
-          <van-tab>
-            <template #title>
-              <div class="picker" v-show="showDate">
-                <span @click="seleTime(2)">午餐</span>
-                <span @click="seleTime(3)">晚餐</span>
-              </div>
-              <span id="baobiao">午餐报表</span>
-              <van-icon name="arrow-down" @click="showPick(1)" />
-            </template>
-            <ul class="food-sum-list">
-              <li><span>预定餐品</span><span>数量</span></li>
-              <li><span>套餐</span><span>1份</span></li>
-              <li><span>水饺</span><span>2份</span></li>
-              <li><span>面条</span><span>3份</span></li>
-              <li><span>砂锅</span><span>4份</span></li>
-            </ul>
-            <div class="food-sum">共9份餐品</div>
-          </van-tab>
-          <van-tab>
-            <template #title>
-              <a class="edit-btn" href="http://dc.it0733.com/dc/edit.html">编辑菜单</a>
-              <!-- <div class="picker" v-show="showDate2">
+  <body>
+    <div id="app">
+      <div class="report">
+        <img class="banner" src="images/ban.jpg" alt="" />
+        <div class="list">
+          <van-tabs type="card">
+            <van-tab>
+              <template #title>
+                <div class="picker" v-show="showDate">
+                  <span @click="seleTime(2)">午餐</span>
+                  <span @click="seleTime(3)">晚餐</span>
+                </div>
+                <span id="baobiao">午餐报表</span>
+                <van-icon name="arrow-down" @click="showPick(1)" />
+              </template>
+              <ul class="food-sum-list">
+                <li><span>预定餐品</span><span>数量</span></li>
+                <li><span>套餐</span><span>1份</span></li>
+                <li><span>水饺</span><span>2份</span></li>
+                <li><span>面条</span><span>3份</span></li>
+                <li><span>砂锅</span><span>4份</span></li>
+              </ul>
+              <div class="food-sum">共9份餐品</div>
+            </van-tab>
+            <van-tab>
+              <template #title>
+                <a class="edit-btn" href="http://dc.it0733.com/dc/edit.html">编辑菜单</a>
+                <!-- <div class="picker" v-show="showDate2">
                 <span @click="seleTime2(2)">午餐</span>
                 <span @click="seleTime2(3)">晚餐</span>
               </div> -->
-              <!-- <span id="mingxi">午餐明细</span>
+                <!-- <span id="mingxi">午餐明细</span>
               <van-icon name="arrow-down" @click="showPick(2)" /> -->
-            </template>
-            <ul class="food-details">
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-              <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
-            </ul>
-          </van-tab>
-        </van-tabs>
-        <van-tabbar v-model="oneDay">
-          <van-tabbar-item v-for="days in day" @click="seleDay(days)">{{days}}</van-tabbar-item>
-        </van-tabbar>
+              </template>
+              <ul class="food-details">
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+                <li><span>张某某 网络部 &nbsp; 6/10</span><span>中午</span><span>套餐1份 砂锅4份</span></li>
+              </ul>
+            </van-tab>
+          </van-tabs>
+          <van-tabbar v-model="oneDay">
+            <van-tabbar-item v-for="days in day" @click="seleDay(days)">{{days}}</van-tabbar-item>
+          </van-tabbar>
+        </div>
       </div>
     </div>
-  </div>
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data() {
-        return {
-          oneDay: 3,
-          day: [],
-          showDate: false,
-          showDate2: false,
-          report: 2, //预定报表当前值，2：午餐，3：晚餐
-          details: 2 //预定明细当前值
-        }
-      },
-      computed: {
-        seleDate: function () {
-          return this.day[this.oneDay]
-        }
-      },
-      mounted() {
-        //获取url参数
-        var url = location.search;
-        let theRequest = {};
-        if (url.indexOf("?") != -1) {
-          let str = url.substr(1);
-          strs = str.split("&");
-          for (let i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-          }
-        }
-        //获取最近7天
-        var date = new Date()
-        var m = date.getMonth() + 1
-        for (let i = 0; i < 7; i++) {
-          let d = date.getDate() - 3 + i
-          this.day.push(m + '/' + d)
-          if (this.day[i] == theRequest.seleDate) {
-            this.oneDay = i
-          }
-        }
-      },
-      methods: {
-        showPick(num) {
-          if (num == 1) {
-            this.showDate = !this.showDate
-          } else if (num == 2) {
-            this.showDate2 = !this.showDate2
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data() {
+          return {
+            oneDay: 3,
+            day: [],
+            showDate: false,
+            showDate2: false,
+            report: 2, //预定报表当前值，2：午餐，3：晚餐
+            details: 2 //预定明细当前值
           }
         },
-        //预定报表
-        seleTime(value) {
-          this.showDate = false
-          this.report = value
-          if (value == 3) {
-            $("#baobiao").text("晚餐报表");
-          } else {
-            $("#baobiao").text("午餐报表");
+        computed: {
+          seleDate: function () {
+            return this.day[this.oneDay]
           }
-          alert(this.seleDate + " 报表:" + this.report + " 明细:" + this.details)
         },
-        //预定明细
-        seleTime2(value) {
-          this.showDate2 = false
-          this.details = value
-          //alert(value)
-          if (value == 3) {
-            $("#mingxi").text("晚餐明细");
-          } else {
-            $("#mingxi").text("午餐明细");
+        mounted() {
+          //获取url参数
+          var url = location.search
+          let theRequest = {}
+          if (url.indexOf('?') != -1) {
+            let str = url.substr(1)
+            strs = str.split('&')
+            for (let i = 0; i < strs.length; i++) {
+              theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+            }
           }
-          alert(this.seleDate + " 报表:" + this.report + " 明细:" + this.details)
+          //获取最近7天
+          var date = new Date()
+          var m = date.getMonth() + 1
+          for (let i = 0; i < 7; i++) {
+            let d = date.getDate() - 3 + i
+            this.day.push(m + '/' + d)
+            if (this.day[i] == theRequest.seleDate) {
+              this.oneDay = i
+            }
+          }
         },
-        //日期筛选
-        seleDay(day) {
-          alert(day + " 报表:" + this.report + " 明细:" + this.details)
+        methods: {
+          showPick(num) {
+            if (num == 1) {
+              this.showDate = !this.showDate
+            } else if (num == 2) {
+              this.showDate2 = !this.showDate2
+            }
+          },
+          //预定报表
+          seleTime(value) {
+            this.showDate = false
+            this.report = value
+            if (value == 3) {
+              $('#baobiao').text('晚餐报表')
+            } else {
+              $('#baobiao').text('午餐报表')
+            }
+            alert(this.seleDate + ' 报表:' + this.report + ' 明细:' + this.details)
+          },
+          //预定明细
+          seleTime2(value) {
+            this.showDate2 = false
+            this.details = value
+            //alert(value)
+            if (value == 3) {
+              $('#mingxi').text('晚餐明细')
+            } else {
+              $('#mingxi').text('午餐明细')
+            }
+            alert(this.seleDate + ' 报表:' + this.report + ' 明细:' + this.details)
+          },
+          //日期筛选
+          seleDay(day) {
+            alert(day + ' 报表:' + this.report + ' 明细:' + this.details)
+          }
+        },
+        destroyed() {
+          clearInterval(this.timer)
         }
-      },
-      destroyed() {
-        clearInterval(this.timer);
-      }
-    })
-  </script>
-</body>
-
+      })
+    </script>
+  </body>
 </html>

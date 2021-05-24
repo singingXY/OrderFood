@@ -1,148 +1,140 @@
 <!DOCTYPE html>
 <html lang="zh">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="telephone=no" name="format-detection" />
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  <meta content="yes" name="apple-mobile-web-app-capable" />
-  <meta content="telephone=no" name="format-detection" />
+    <title>订单详细_苏州同济医院</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vant.min.js"></script>
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+    <link href="css/layout.css" rel="stylesheet" />
+  </head>
 
-  <title>订单详细_苏州同济医院</title>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/vue@2.6.11.js"></script>
-  <script src="js/vant.min.js"></script>
-  <script src="js/rem.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
-  <link href="css/layout.css" rel="stylesheet" />
-</head>
+  <body>
+    <style>
+      .list {
+        height: calc(100vh - 4.45rem - 4rem);
+        padding-top: 1rem;
+      }
 
-<body>
-  <style>
-    .list {
-      height: calc(100vh - 4.45rem - 4rem);
-      padding-top: 1rem;
-    }
+      .van-hairline--top-bottom::after,
+      .van-hairline-unset--top-bottom::after {
+        border-width: 0;
+      }
 
-    .van-hairline--top-bottom::after,
-    .van-hairline-unset--top-bottom::after {
-      border-width: 0;
-    }
+      .head-day .van-tabs__nav--card .van-tab {
+        border: 0;
+        border-radius: 0.5rem 0.5rem 0 0;
+        color: #fff;
+        font-weight: bold;
+      }
 
+      .head-day .van-tabs__nav--card .van-tab.van-tab--active {
+        background: #fff;
+        color: #008f7b;
+      }
 
-    .head-day .van-tabs__nav--card .van-tab {
-      border: 0;
-      border-radius: .5rem .5rem 0 0;
-      color: #fff;
-      font-weight: bold;
-    }
+      .food-details {
+        max-height: calc(100vh - 10rem);
+      }
 
-    .head-day .van-tabs__nav--card .van-tab.van-tab--active {
-      background: #fff;
-      color: #008f7b;
-    }
+      .food-details li {
+        font-size: 1.2rem;
+        height: 2.7rem;
+        line-height: 2.7rem;
+      }
 
-    .food-details {
-      max-height: calc(100vh - 10rem);
-    }
-
-    .food-details li {
-      font-size: 1.2rem;
-      height: 2.7rem;
-      line-height: 2.7rem;
-    }
-
-    .food-details span:last-child {
-      color: #f70;
-      font-weight: 700;
-    }
-  </style>
-  <div id="app">
-    <div class="report">
-      <img class="banner" src="images/logo.png" alt="">
-      <van-tabs class="head-day" type="card" background="#008F7B" v-model="dayActive" @change="dateChange">
-        <van-tab :title="days" v-for="(days,index) in day"></van-tab>
-      </van-tabs>
-      <div class="list">
-        <van-tabs v-model="timeActive" color="#008F7B">
-          <van-tab :title="key" v-for="(item,key) in timedata">
-            <ul class="food-details">
-              <li v-for="(items,key) in item">
-                <span>{{key.split('_')[0]}} 床号{{key.split('_')[1]}}</span>
-                <span>
-                  <template v-if="items['粥']">粥:{{items['粥']}}，</template>
-                  <template v-if="items['饭']">饭:{{items['饭']}}，</template>
-                  <template v-if="items['面']">面:{{items['面']}}</template></span>
-                <span>￥{{totalPrice(items)}}</span>
-              </li>
-            </ul>
-          </van-tab>
-
+      .food-details span:last-child {
+        color: #f70;
+        font-weight: 700;
+      }
+    </style>
+    <div id="app">
+      <div class="report">
+        <img class="banner" src="images/logo.png" alt="" />
+        <van-tabs class="head-day" type="card" background="#008F7B" v-model="dayActive" @change="dateChange">
+          <van-tab :title="days" v-for="(days,index) in day"></van-tab>
         </van-tabs>
+        <div class="list">
+          <van-tabs v-model="timeActive" color="#008F7B">
+            <van-tab :title="key" v-for="(item,key) in timedata">
+              <ul class="food-details">
+                <li v-for="(items,key) in item">
+                  <span>{{key.split('_')[0]}} 床号{{key.split('_')[1]}}</span>
+                  <span>
+                    <template v-if="items['粥']">粥:{{items['粥']}}，</template>
+                    <template v-if="items['饭']">饭:{{items['饭']}}，</template>
+                    <template v-if="items['面']">面:{{items['面']}}</template></span
+                  >
+                  <span>￥{{totalPrice(items)}}</span>
+                </li>
+              </ul>
+            </van-tab>
+          </van-tabs>
+        </div>
       </div>
     </div>
-  </div>
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data() {
-        return {
-          day: [], // 今明两日
-          Aday: [], // 今明两日
-          dayActive: 0, //当前日期index
-          timeActive: 0, //当前时段index
-          data: '',
-          timedata: '',
-          menus: { "粥": 6, '面': 10, '饭': 12 }
-        }
-      },
-      mounted() {
-        //获取最近2天
-        var date = new Date()
-        var y = date.getFullYear()
-        var m = date.getMonth() + 1
-        m = m < 10 ? '0' + m : m
-        var d = date.getDate()
-        var d2 = date.getDate() + 1
-        d = d < 10 ? '0' + d : d
-        d2 = d2 < 10 ? '0' + d2 : d2
-        this.day = [
-          '今天 ' + m + '-' + d,
-          '明天 ' + m + '-' + d2,
-        ]
-        this.Aday = [
-          y + '-' + m + '-' + d,
-          y + '-' + m + '-' + d2,
-        ]
-
-
-        var _this = this
-        $.ajax({
-          type: "GET",
-          url: "http://test.it0733.com/index.php/Apiinfo/Tjyy/getDcInfo",
-          success: (res) => {
-            console.log(JSON.parse(res));
-            _this.data = JSON.parse(res)
-            _this.timedata = _this.data[_this.Aday[0]]
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data() {
+          return {
+            day: [], // 今明两日
+            Aday: [], // 今明两日
+            dayActive: 0, //当前日期index
+            timeActive: 0, //当前时段index
+            data: '',
+            timedata: '',
+            menus: { 粥: 6, 面: 10, 饭: 12 }
           }
-        })
-      },
-      methods: {
-        totalPrice: function (e) {
-          let total = 0;
-          for (var key in e) {
-            total += this.menus[key] * e[key];
-          }
-          return total;
         },
-        dateChange(e) {
-          //console.log(e);
-          //console.log(this.timedata);
-          this.timedata = this.data[this.Aday[e]]
-        }
-      }
-    })
-  </script>
-</body>
+        mounted() {
+          //获取最近2天
+          var date = new Date()
+          var y = date.getFullYear()
+          var m = date.getMonth() + 1
+          m = m < 10 ? '0' + m : m
+          var d = date.getDate()
+          var d2 = date.getDate() + 1
+          d = d < 10 ? '0' + d : d
+          d2 = d2 < 10 ? '0' + d2 : d2
+          this.day = ['今天 ' + m + '-' + d, '明天 ' + m + '-' + d2]
+          this.Aday = [y + '-' + m + '-' + d, y + '-' + m + '-' + d2]
 
+          var _this = this
+          $.ajax({
+            type: 'GET',
+            url: 'http://test.it0733.com/index.php/Apiinfo/Tjyy/getDcInfo',
+            success: (res) => {
+              console.log(JSON.parse(res))
+              _this.data = JSON.parse(res)
+              _this.timedata = _this.data[_this.Aday[0]]
+            }
+          })
+        },
+        methods: {
+          totalPrice: function (e) {
+            let total = 0
+            for (var key in e) {
+              total += this.menus[key] * e[key]
+            }
+            return total
+          },
+          dateChange(e) {
+            //console.log(e);
+            //console.log(this.timedata);
+            this.timedata = this.data[this.Aday[e]]
+          }
+        }
+      })
+    </script>
+  </body>
 </html>

@@ -1,395 +1,425 @@
 <!DOCTYPE html>
 <html lang="zh">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="telephone=no" name="format-detection" />
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  <meta content="yes" name="apple-mobile-web-app-capable" />
-  <meta content="telephone=no" name="format-detection" />
+    <title>苏州同济医院_在线订餐</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vant.min.js"></script>
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
+    <link href="css/layout.css" rel="stylesheet" />
+  </head>
 
-  <title>苏州同济医院_在线订餐</title>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/vue@2.6.11.js"></script>
-  <script src="js/vant.min.js"></script>
-  <script src="js/rem.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css" />
-  <link href="css/layout.css" rel="stylesheet" />
-</head>
-
-<body>
-  <div id="app">
-    <div class="login">
-      <img class="banner" src="images/ban.jpg" alt="">
-      <h2>同济食堂在线订餐</h2>
-      <div class="form">
-        <label for="" class="sele" @click="currentTime()">
-          <span>就餐日期</span>
-          <div class="input">{{today}}</div>
-        </label>
-        <label v-if="verified == false">
-          <span>就餐人</span>
-          <div class="input">{{user}}</div>
-          <div class="code-btn" @click="ChangeDiner()">更改就餐人</div>
-        </label>
-        <label for="" v-else>
-          <span>手机号码</span>
-          <input type="tel" v-model="tel" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
-            placeholder="请输入手机号">
-        </label>
-        <label for="" v-if="Logged !== true">
-          <span>验证码</span>
-          <input type="text" v-model="msgCode" pattern="[0-9]*" oninput="value=value.replace(/[^\d.]/, '')"
-            placeholder="请输入短信验证码">
-          <div class="code-btn" v-if="verifiedCode" @click="getCode()">获取验证码</div>
-        </label>
-        <label for="" class="sele" @click="menuHide()">
-          <span>预订餐品</span>
-          <div class="input">请选择餐品</div>
-        </label>
+  <body>
+    <div id="app">
+      <div class="login">
+        <img class="banner" src="images/ban.jpg" alt="" />
+        <h2>同济食堂在线订餐</h2>
+        <div class="form">
+          <label for="" class="sele" @click="currentTime()">
+            <span>就餐日期</span>
+            <div class="input">{{today}}</div>
+          </label>
+          <label v-if="verified == false">
+            <span>就餐人</span>
+            <div class="input">{{user}}</div>
+            <div class="code-btn" @click="ChangeDiner()">更改就餐人</div>
+          </label>
+          <label for="" v-else>
+            <span>手机号码</span>
+            <input
+              type="tel"
+              v-model="tel"
+              pattern="[0-9]*"
+              oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入手机号"
+            />
+          </label>
+          <label for="" v-if="Logged !== true">
+            <span>验证码</span>
+            <input
+              type="text"
+              v-model="msgCode"
+              pattern="[0-9]*"
+              oninput="value=value.replace(/[^\d.]/, '')"
+              placeholder="请输入短信验证码"
+            />
+            <div class="code-btn" v-if="verifiedCode" @click="getCode()">获取验证码</div>
+          </label>
+          <label for="" class="sele" @click="menuHide()">
+            <span>预订餐品</span>
+            <div class="input">请选择餐品</div>
+          </label>
+        </div>
+        <div class="bottom">
+          <div class="shoppingCart" @click="menuHide()">
+            <span>{{foodSum}}</span>
+            <img src="images/cart.png" alt="" />
+          </div>
+          <p>￥{{totalPrice}}</p>
+          <div class="submit" @click="submitForm()">立即提交</div>
+        </div>
+        <van-action-sheet v-model="menuShow" :round="false">
+          <div class="delete" @click="clearNum">
+            <span> <van-icon name="delete" />清除重选 </span>
+          </div>
+          <div class="menu-content">
+            <van-cell v-for="(menu,index) in menus" :key="index" v-if="menu.show == 1">
+              <template #title>
+                <div class="cell-title">
+                  <span> {{menu.food}}<span class="cell-dese" v-if="menu.desc">{{menu.desc}}</span> </span>
+                  <span>￥{{menu.price}}</span>
+                </div>
+              </template>
+              <template #right-icon>
+                <van-stepper
+                  v-model="menu.num"
+                  theme="round"
+                  min="0"
+                  button-size="22"
+                  disable-input
+                  default-value="0"
+                />
+              </template>
+            </van-cell>
+          </div>
+        </van-action-sheet>
+        <van-action-sheet v-model="datetime" :round="false">
+          <van-picker
+            show-toolbar
+            title="选择就餐日期"
+            :columns="columns"
+            visible-item-count="3"
+            @confirm="selectTime($event)"
+            @cancel="currentTime()"
+          />
+        </van-action-sheet>
       </div>
-      <div class="bottom">
-        <div class="shoppingCart" @click="menuHide()">
-          <span>{{foodSum}}</span>
-          <img src="images/cart.png" alt="">
-        </div>
-        <p>￥{{totalPrice}}</p>
-        <div class="submit" @click="submitForm()">立即提交</div>
-      </div>
-      <van-action-sheet v-model="menuShow" :round="false">
-        <div class="delete" @click="clearNum">
-          <span>
-            <van-icon name="delete" />清除重选
-          </span>
-        </div>
-        <div class="menu-content">
-          <van-cell v-for="(menu,index) in menus" :key="index" v-if="menu.show == 1">
-            <template #title>
-              <div class="cell-title">
-                <span>
-                  {{menu.food}}<span class="cell-dese" v-if="menu.desc">{{menu.desc}}</span>
-                </span>
-                <span>￥{{menu.price}}</span>
-              </div>
-            </template>
-            <template #right-icon>
-              <van-stepper v-model="menu.num" theme="round" min="0" button-size="22" disable-input default-value="0" />
-            </template>
-          </van-cell>
-        </div>
-      </van-action-sheet>
-      <van-action-sheet v-model="datetime" :round="false">
-        <van-picker show-toolbar title="选择就餐日期" :columns="columns" visible-item-count="3" @confirm="selectTime($event)"
-          @cancel="currentTime()" />
-      </van-action-sheet>
     </div>
-  </div>
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data() {
-        return {
-          menuShow: false,  //选餐窗口
-          menu: [],
-          menus: [
-            {
-              type: 1,
-              food: "番茄鸡蛋面",
-              price: 6,
-              num: 0,
-              show: 1
-            }, {
-              type: 2,
-              food: '青菜肉丝面',
-              price: 6,
-              num: 0,
-              show: 1
-            }, {
-              type: 3,
-              food: '青椒肉片鱼丸青菜面',
-              price: 15,
-              num: 0,
-              show: 1
-            }, {
-              type: 4,
-              food: '炒饭+1小荤+1素菜+1例汤',
-              price: 11,
-              num: 0,
-              show: 1
-            }, {
-              type: 5,
-              food: '套餐',
-              desc: '（1大荤+2小荤+2素菜+1例汤）',
-              price: 11,
-              num: 0,
-              show: 1
-            }, {
-              type: 6,
-              food: '菜肉水饺',
-              desc: '（15只）',
-              price: 11,
-              num: 0,
-              show: 1
-            }, {
-              type: 6,
-              food: '荠菜肉馄饨+鸡蛋皮',
-              desc: '（15只）',
-              price: 11,
-              num: 0,
-              show: 1
-            }, {
-              type: 7,
-              food: '什锦砂锅',
-              desc: '（8种辅料）',
-              price: 11,
-              num: 0,
-              show: 1
-            }, {
-              type: 8,
-              food: '炖蛋',
-              desc: '（肉末或银鱼）',
-              price: 3,
-              num: 0,
-              show: 1
-            }, {
-              type: 9,
-              food: '草鸡汤',
-              desc: '（加3种辅料）',
-              price: 16,
-              num: 0,
-              show: 1
-            }, {
-              type: 10,
-              food: '排骨汤',
-              desc: '（加2种辅料）',
-              price: 16,
-              num: 0,
-              show: 1
-            }, {
-              type: 11,
-              food: '肉片鱼丸青菜汤',
-              price: 12,
-              num: 0,
-              show: 1
-            }, {
-              type: 12,
-              food: '番茄鸡蛋青菜汤',
-              price: 6,
-              num: 0,
-              show: 1
-            }
-          ],
-          datetime: false,  //选择日期窗口
-          today: "请选择就餐日期",  //已选日期
-          todayData: '', //已选日期对象
-          verified: true,  //是否未验证过手机号
-          verifiedCode: true, //获取验证码按钮
-          Logged: false,  //登录状态
-          columns: [  //选择时间窗口
-            { values: [] },
-            { values: ['午餐', '晚餐'] },
-          ],
-          user: '',
-          tel: '',
-          msgCode: ''
-        };
-      },
-      mounted() {
-        var date = new Date()
-        var y = date.getFullYear()
-        var m = date.getMonth() + 1
-        var d = date.getDate()
-        var day = this.columns[0].values
-        for (let i = 0; i < 7; i++) {
-          let d = date.getDate() + i
-          day.push(y + '/' + m + '/' + d)
-        }
-        if (localStorage.getItem('Logged') == 'true') {
-          this.Logged = true
-          this.user = localStorage.getItem('user')
-          this.tel = localStorage.getItem('tel')
-          if (this.user) {
-            this.verified = false
-          }
-        }
-      },
-      computed: {
-        foodSum: function () {
-          let sum = 0;
-          for (let i = 0; i < this.menus.length; i++) {
-            sum += this.menus[i].num;
-          }
-          return sum;
-        },
-        totalPrice: function () {
-          let total = 0;
-          for (let i = 0; i < this.menus.length; i++) {
-            total += this.menus[i].price * this.menus[i].num;
-          }
-          return total;
-        },
-
-      },
-      methods: {
-        //清除已选餐品
-        clearNum() {
-          for (let i = 0; i < this.menus.length; i++) {
-            this.menus[i].num = 0;
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data() {
+          return {
+            menuShow: false, //选餐窗口
+            menu: [],
+            menus: [
+              {
+                type: 1,
+                food: '番茄鸡蛋面',
+                price: 6,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 2,
+                food: '青菜肉丝面',
+                price: 6,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 3,
+                food: '青椒肉片鱼丸青菜面',
+                price: 15,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 4,
+                food: '炒饭+1小荤+1素菜+1例汤',
+                price: 11,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 5,
+                food: '套餐',
+                desc: '（1大荤+2小荤+2素菜+1例汤）',
+                price: 11,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 6,
+                food: '菜肉水饺',
+                desc: '（15只）',
+                price: 11,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 6,
+                food: '荠菜肉馄饨+鸡蛋皮',
+                desc: '（15只）',
+                price: 11,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 7,
+                food: '什锦砂锅',
+                desc: '（8种辅料）',
+                price: 11,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 8,
+                food: '炖蛋',
+                desc: '（肉末或银鱼）',
+                price: 3,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 9,
+                food: '草鸡汤',
+                desc: '（加3种辅料）',
+                price: 16,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 10,
+                food: '排骨汤',
+                desc: '（加2种辅料）',
+                price: 16,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 11,
+                food: '肉片鱼丸青菜汤',
+                price: 12,
+                num: 0,
+                show: 1
+              },
+              {
+                type: 12,
+                food: '番茄鸡蛋青菜汤',
+                price: 6,
+                num: 0,
+                show: 1
+              }
+            ],
+            datetime: false, //选择日期窗口
+            today: '请选择就餐日期', //已选日期
+            todayData: '', //已选日期对象
+            verified: true, //是否未验证过手机号
+            verifiedCode: true, //获取验证码按钮
+            Logged: false, //登录状态
+            columns: [
+              //选择时间窗口
+              { values: [] },
+              { values: ['午餐', '晚餐'] }
+            ],
+            user: '',
+            tel: '',
+            msgCode: ''
           }
         },
-        menuHide() {
-          if (this.todayData == '') {
-            this.$toast.fail('请选择就餐时间');
-          } else {
-            this.menuShow = !this.menuShow;
+        mounted() {
+          var date = new Date()
+          var y = date.getFullYear()
+          var m = date.getMonth() + 1
+          var d = date.getDate()
+          var day = this.columns[0].values
+          for (let i = 0; i < 7; i++) {
+            let d = date.getDate() + i
+            day.push(y + '/' + m + '/' + d)
           }
-        },
-        currentTime() {
-          this.datetime = !this.datetime;
-        },
-        //选择时间
-        selectTime(e) {
-          var orderDay = e[0].split('/')[2]
-          var now = new Date().getHours();
-          if (orderDay == new Date().getDate()) {
-            if (e[1] == '午餐' && now >= 11) {
-              this.$toast.fail('当天午餐请在11:00前预定');
-              return false
-            } else if (e[1] == '晚餐' && now >= 17) {
-              this.$toast.fail('无法预定，已经超出当天可订餐时间');
-              return false
+          if (localStorage.getItem('Logged') == 'true') {
+            this.Logged = true
+            this.user = localStorage.getItem('user')
+            this.tel = localStorage.getItem('tel')
+            if (this.user) {
+              this.verified = false
             }
           }
-          this.today = e[0] + ' ' + e[1]
-          this.todayData = e
-          this.currentTime();
-          var nowMenu = this.menus
-          this.menu = this.menus
-          if (this.todayData[1] == '午餐') {
-            for (let i = 0; i < nowMenu.length; i++) {
-              if (nowMenu[i].type == '5') {
+        },
+        computed: {
+          foodSum: function () {
+            let sum = 0
+            for (let i = 0; i < this.menus.length; i++) {
+              sum += this.menus[i].num
+            }
+            return sum
+          },
+          totalPrice: function () {
+            let total = 0
+            for (let i = 0; i < this.menus.length; i++) {
+              total += this.menus[i].price * this.menus[i].num
+            }
+            return total
+          }
+        },
+        methods: {
+          //清除已选餐品
+          clearNum() {
+            for (let i = 0; i < this.menus.length; i++) {
+              this.menus[i].num = 0
+            }
+          },
+          menuHide() {
+            if (this.todayData == '') {
+              this.$toast.fail('请选择就餐时间')
+            } else {
+              this.menuShow = !this.menuShow
+            }
+          },
+          currentTime() {
+            this.datetime = !this.datetime
+          },
+          //选择时间
+          selectTime(e) {
+            var orderDay = e[0].split('/')[2]
+            var now = new Date().getHours()
+            if (orderDay == new Date().getDate()) {
+              if (e[1] == '午餐' && now >= 11) {
+                this.$toast.fail('当天午餐请在11:00前预定')
+                return false
+              } else if (e[1] == '晚餐' && now >= 17) {
+                this.$toast.fail('无法预定，已经超出当天可订餐时间')
+                return false
+              }
+            }
+            this.today = e[0] + ' ' + e[1]
+            this.todayData = e
+            this.currentTime()
+            var nowMenu = this.menus
+            this.menu = this.menus
+            if (this.todayData[1] == '午餐') {
+              for (let i = 0; i < nowMenu.length; i++) {
+                if (nowMenu[i].type == '5') {
+                  nowMenu[i].show = 1
+                } else {
+                  nowMenu[i].show = 0
+                }
+              }
+            } else {
+              for (let i = 0; i < nowMenu.length; i++) {
                 nowMenu[i].show = 1
-              } else {
-                nowMenu[i].show = 0
               }
             }
-          } else {
-            for (let i = 0; i < nowMenu.length; i++) {
-              nowMenu[i].show = 1
-            }
-          }
-          this.menus = nowMenu
-        },
-        //获取验证码
-        getCode() {
-          if (this.tel == '') {
-            this.$toast.fail('请填写手机号码');
-            return false
-          }
-          $.ajax({
-            type: 'post',
-            url: '?act=getcode&tel=' + this.tel + "&r=" + Math.random(),
-            success: (r) => {
-              if (r == "手机号未被授权！") {
-                this.$toast.fail(r);
-              } else {
-                this.showUser(r)
-              }
-            }
-          });
-        },
-        //更改就餐人
-        ChangeDiner() {
-          localStorage.setItem("user", '');
-          this.Logged = false
-          localStorage.setItem("Logged", false);
-          this.verified = true
-          this.verifiedCode = true
-        },
-        //提交表单
-        submitForm() {
-          if (this.Logged != true) {
+            this.menus = nowMenu
+          },
+          //获取验证码
+          getCode() {
             if (this.tel == '') {
-              this.$toast.fail('请验证手机号码');
+              this.$toast.fail('请填写手机号码')
               return false
             }
-            if (this.msgCode == '') {
-              this.$toast.fail('请填写验证码');
-              return false
-            }
-          }
-          if (this.today == "请选择就餐日期") {
-            this.$toast.fail('请选择就餐日期');
-            return false
-          }
-          if (this.foodSum == 0) {
-            this.$toast.fail('请选择餐品');
-            return false
-          }
-          var data = {
-            act: 'save',
-            tel: this.tel,
-            code: this.msgCode,
-            jiucan_date: this.todayData[0],
-            jiucan_time: this.todayData[1],
-            yudingxinxi: JSON.stringify(this.menu)
-          }
-          $.ajax({
-            type: "POST",
-            url: "?act=save",
-            data: data,
-            success: (r) => {
-              console.log(r);
-              if (r.indexOf("验证码错误") != -1) {
-                this.$toast.fail('验证码错误！');
-                //}else if (r == "是否覆盖") {
-              } else if (r.indexOf("是否覆盖") != -1) {
-                //若记录存在
-                var re = confirm("您已预定过，是否覆盖已预定餐品");
-                if (re == true) {
-                  $.ajax({
-                    type: "POST",
-                    url: "?act=save&update=1",
-                    data: data,
-                    success: (res) => {
-                      this.$toast.success('更改成功')
-                    },
-                    error: (e) => {
-                      this.$toast.fail('提交失败');
-                      console.log(e);
-                    }
-                  })
+            $.ajax({
+              type: 'post',
+              url: '?act=getcode&tel=' + this.tel + '&r=' + Math.random(),
+              success: (r) => {
+                if (r == '手机号未被授权！') {
+                  this.$toast.fail(r)
+                } else {
+                  this.showUser(r)
                 }
-                else {
-                  return false
-                }
-              } else {
-                this.verified = false
-                localStorage.setItem("user", this.user);
-                localStorage.setItem("Logged", true);
-                this.Logged = true
-                this.$toast.success('预定成功');
               }
-            },
-            error: (error) => {
-              this.$toast.fail('提交失败');
-              console.log(error);
+            })
+          },
+          //更改就餐人
+          ChangeDiner() {
+            localStorage.setItem('user', '')
+            this.Logged = false
+            localStorage.setItem('Logged', false)
+            this.verified = true
+            this.verifiedCode = true
+          },
+          //提交表单
+          submitForm() {
+            if (this.Logged != true) {
+              if (this.tel == '') {
+                this.$toast.fail('请验证手机号码')
+                return false
+              }
+              if (this.msgCode == '') {
+                this.$toast.fail('请填写验证码')
+                return false
+              }
             }
-          })
-        },
-        showUser(r) {
-          if (!r) {
-            return false
-          } else {
-            this.user = r
-            localStorage.setItem("tel", this.tel);
-            this.verified = false
-            this.verifiedCode = false
+            if (this.today == '请选择就餐日期') {
+              this.$toast.fail('请选择就餐日期')
+              return false
+            }
+            if (this.foodSum == 0) {
+              this.$toast.fail('请选择餐品')
+              return false
+            }
+            var data = {
+              act: 'save',
+              tel: this.tel,
+              code: this.msgCode,
+              jiucan_date: this.todayData[0],
+              jiucan_time: this.todayData[1],
+              yudingxinxi: JSON.stringify(this.menu)
+            }
+            $.ajax({
+              type: 'POST',
+              url: '?act=save',
+              data: data,
+              success: (r) => {
+                console.log(r)
+                if (r.indexOf('验证码错误') != -1) {
+                  this.$toast.fail('验证码错误！')
+                  //}else if (r == "是否覆盖") {
+                } else if (r.indexOf('是否覆盖') != -1) {
+                  //若记录存在
+                  var re = confirm('您已预定过，是否覆盖已预定餐品')
+                  if (re == true) {
+                    $.ajax({
+                      type: 'POST',
+                      url: '?act=save&update=1',
+                      data: data,
+                      success: (res) => {
+                        this.$toast.success('更改成功')
+                      },
+                      error: (e) => {
+                        this.$toast.fail('提交失败')
+                        console.log(e)
+                      }
+                    })
+                  } else {
+                    return false
+                  }
+                } else {
+                  this.verified = false
+                  localStorage.setItem('user', this.user)
+                  localStorage.setItem('Logged', true)
+                  this.Logged = true
+                  this.$toast.success('预定成功')
+                }
+              },
+              error: (error) => {
+                this.$toast.fail('提交失败')
+                console.log(error)
+              }
+            })
+          },
+          showUser(r) {
+            if (!r) {
+              return false
+            } else {
+              this.user = r
+              localStorage.setItem('tel', this.tel)
+              this.verified = false
+              this.verifiedCode = false
+            }
           }
         }
-      }
-    })
-  </script>
-</body>
-
+      })
+    </script>
+  </body>
 </html>
